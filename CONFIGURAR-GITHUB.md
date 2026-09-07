@@ -10,6 +10,8 @@ para o site online pelo botão **Publicar**.
 > A pasta se chama `docs` porque o GitHub Pages, ao publicar a partir de uma
 > branch, só aceita servir a raiz do repositório ou a pasta `/docs`.
 
+> Para instalar em outra máquina e o manual de uso, abra o MANUAL.html.
+
 ## Uso no dia a dia
 
 1. Dê dois cliques em `iniciar.command` (ou rode `./iniciar.command`).

@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  html { color-scheme: light dark; }
+  body { margin: 0; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+<title>Painel Divina Lolla</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Karla:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --ink:    #2B2130;
+    --paper:  #F6F2F4;
+    --card:   #FFFDFE;
+    --plum:   #8E4361;
+    --brass:  #A17A45;
+    --mauve:  #6B5C6E;
+    --rule:   #DED4DC;
+    --ok:     #3F6F53;
+    --warn:   #A65A24;
+    --term-bg: #2B2130;
+    --term-fg: #EDE4EA;
+
+    --display: "Fraunces", Georgia, "Times New Roman", serif;
+    --body:    "Karla", "Helvetica Neue", Arial, sans-serif;
+    --mono:    "IBM Plex Mono", "SF Mono", Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink:    #EDE4EA;
+      --paper:  #1E1822;
+      --card:   #271F2C;
+      --plum:   #D98BA6;
+      --brass:  #C89F60;
+      --mauve:  #A294A6;
+      --rule:   #3D3243;
+      --ok:     #7BB08D;
+      --warn:   #D9924F;
+      --term-bg: #140F18;
+      --term-fg: #EDE4EA;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ink:    #EDE4EA;
+    --paper:  #1E1822;
+    --card:   #271F2C;
+    --plum:   #D98BA6;
+    --brass:  #C89F60;
+    --mauve:  #A294A6;
+    --rule:   #3D3243;
+    --ok:     #7BB08D;
+    --warn:   #D9924F;
+    --term-bg: #140F18;
+    --term-fg: #EDE4EA;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.65;
+    margin: 0;
+    padding: 0 6vw 6rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 40rem; margin: 0 auto; }
+
+  /* ── Abertura ─────────────────────────────────────────── */
+  header { padding: 4.5rem 0 2.5rem; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: .7rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--brass);
+    margin: 0 0 1.4rem;
+  }
+
+  h1 {
+    font-family: var(--display);
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-size: clamp(2.3rem, 7vw, 3.4rem);
+    line-height: 1.03;
+    letter-spacing: -.02em;
+    text-wrap: balance;
+    margin: 0 0 1.1rem;
+  }
+
+  .standfirst {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.2rem;
+    line-height: 1.5;
+    color: var(--mauve);
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  /* ── Ficha de endereços ───────────────────────────────── */
+  .facts {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: .55rem 1.6rem;
+    margin: 2.5rem 0 0;
+    padding: 1.4rem 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    font-size: .93rem;
+  }
+  .facts dt {
+    font-family: var(--mono);
+    font-size: .68rem;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--mauve);
+    padding-top: .28rem;
+    white-space: nowrap;
+  }
+  .facts dd { margin: 0; }
+  .facts a { color: var(--plum); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+  /* ── Seções ───────────────────────────────────────────── */
+  section { margin-top: 3.6rem; }
+
+  h2 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.65rem;
+    line-height: 1.15;
+    letter-spacing: -.01em;
+    text-wrap: balance;
+    margin: 0 0 .35rem;
+    padding-bottom: .7rem;
+    border-bottom: 2px solid var(--plum);
+  }
+
+  .section-note {
+    color: var(--mauve);
+    font-size: .95rem;
+    margin: .9rem 0 0;
+  }
+
+  h3 {
+    font-family: var(--body);
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: .01em;
+    margin: 2rem 0 .4rem;
+  }
+
+  p { margin: .85rem 0; }
+  a { color: var(--plum); }
+
+  /* ── Passos: numeral de latão pendurado na margem ─────── */
+  .steps { counter-reset: step; margin-top: 1.8rem; }
+
+  .step {
+    counter-increment: step;
+    position: relative;
+    padding: 0 0 2rem 3.4rem;
+  }
+  .step::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: -.28rem;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1.9rem;
+    line-height: 1;
+    color: var(--brass);
+    font-variant-numeric: tabular-nums;
+  }
+  .step::after {
+    content: "";
+    position: absolute;
+    left: 1.05rem;
+    top: 2.1rem;
+    bottom: .35rem;
+    width: 1px;
+    background: var(--rule);
+  }
+  .step:last-child::after { display: none; }
+
+  .step h3 {
+    margin: 0 0 .3rem;
+    font-size: 1.08rem;
+  }
+  .step p { margin: .5rem 0; }
+
+  /* ── Terminal ─────────────────────────────────────────── */
+  .term {
+    background: var(--term-bg);
+    color: var(--term-fg);
+    font-family: var(--mono);
+    font-size: .82rem;
+    line-height: 1.6;
+    padding: .95rem 1.1rem;
+    margin: .9rem 0;
+    overflow-x: auto;
+    border-left: 3px solid var(--brass);
+  }
+  .term span { color: #C89F60; }
+
+  code {
+    font-family: var(--mono);
+    font-size: .86em;
+    background: color-mix(in srgb, var(--plum) 12%, transparent);
+    padding: .12em .38em;
+    border-radius: 2px;
+  }
+
+  /* ── Avisos ───────────────────────────────────────────── */
+  .note {
+    border-left: 3px solid var(--warn);
+    padding: .2rem 0 .2rem 1.1rem;
+    margin: 1.2rem 0;
+    font-size: .95rem;
+  }
+  .note strong { color: var(--warn); }
+
+  .note.good { border-left-color: var(--ok); }
+  .note.good strong { color: var(--ok); }
+
+  /* ── Tabelas ──────────────────────────────────────────── */
+  .tablewrap { overflow-x: auto; margin: 1.4rem 0; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: .68rem .8rem .68rem 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-family: var(--mono);
+    font-size: .66rem;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--mauve);
+    font-weight: 400;
+    border-bottom: 1px solid var(--ink);
+  }
+  td:last-child, th:last-child { padding-right: 0; }
+
+  /* ── Mensagens do painel ──────────────────────────────── */
+  .msgs { margin: 1.4rem 0 0; }
+  .msg {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: .3rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .msg:last-child { border-bottom: none; }
+  .msg .said {
+    font-family: var(--mono);
+    font-size: .82rem;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+  .msg .said::before { content: "“"; color: var(--mauve); }
+  .msg .said::after  { content: "”"; color: var(--mauve); }
+  .msg .means { color: var(--mauve); font-size: .93rem; }
+
+  ul { padding-left: 1.15rem; margin: .8rem 0; }
+  li { margin: .35rem 0; }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--rule);
+    font-size: .85rem;
+    color: var(--mauve);
+  }
+
+  :focus-visible { outline: 2px solid var(--plum); outline-offset: 3px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Divina Lolla · Acessórios</p>
+    <h1>Como publicar o catálogo</h1>
+    <p class="standfirst">O site fica na internet. O painel fica no seu Mac. Você cadastra as peças no painel e clica em Publicar — o site se atualiza sozinho.</p>
+
+    <dl class="facts">
+      <dt>Site</dt>
+      <dd><a href="https://rafaelcsouza1.github.io/divina-lolla/">rafaelcsouza1.github.io/divina-lolla</a></dd>
+      <dt>Painel</dt>
+      <dd><code>http://localhost:5001</code> — só abre na sua máquina</dd>
+      <dt>Instalar</dt>
+      <dd>dois cliques em <code>instalar.command</code></dd>
+      <dt>Abrir</dt>
+      <dd>dois cliques em <code>iniciar.command</code></dd>
+    </dl>
+  </header>
+
+  <section>
+    <h2>Instalação</h2>
+    <p class="section-note">Uma vez só, na primeira vez. Leva uns dois minutos.</p>
+
+    <div class="steps">
+
+      <div class="step">
+        <h3>Abra o instalador</h3>
+        <p>Salve o arquivo <code>instalar.command</code> na sua Área de Trabalho e dê dois cliques nele.</p>
+        <div class="note">
+          <strong>O Mac vai desconfiar do arquivo.</strong> Como ele veio da internet, o macOS bloqueia na primeira tentativa. Em vez de dois cliques, clique com o <em>botão direito</em> sobre o arquivo, escolha <strong>Abrir</strong>, e confirme <strong>Abrir</strong> na janela que aparecer. Isso só é necessário uma vez.
+        </div>
+      </div>
+
+      <div class="step">
+        <h3>Deixe ele trabalhar</h3>
+        <p>O instalador confere se o Mac tem o que precisa, baixa o painel para uma pasta chamada <code>DivinaLolla</code> na sua pasta de usuário, e prepara tudo.</p>
+        <p>Se faltar o Python, ele avisa e manda o endereço para baixar. Se faltar as ferramentas da Apple, ele abre a janela de instalação. Nos dois casos: instale o que ele pediu e rode o instalador de novo.</p>
+      </div>
+
+      <div class="step">
+        <h3>Mande a chave para o Rafael</h3>
+        <p>No final, o instalador mostra um texto comprido começando com <code>ssh-ed25519</code>. Essa é a chave que identifica o seu Mac.</p>
+        <p>Copie <strong>o texto inteiro</strong> e mande para o Rafael. Ele libera o acesso e avisa quando estiver pronto.</p>
+        <div class="note good">
+          <strong>Não precisa esperar para começar.</strong> O painel já funciona sem a liberação: você pode cadastrar as peças e ver como o site vai ficar. Só o botão Publicar fica esperando.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>O dia a dia</h2>
+
+    <div class="steps">
+
+      <div class="step">
+        <h3>Abra o painel</h3>
+        <p>Dois cliques em <code>iniciar.command</code>, dentro da pasta <code>DivinaLolla</code>. O navegador abre sozinho no painel.</p>
+        <p>Uma janela preta de texto fica aberta atrás — é o painel funcionando. Deixe ela aberta enquanto estiver trabalhando; para encerrar, feche a janela.</p>
+      </div>
+
+      <div class="step">
+        <h3>Cadastre as peças</h3>
+        <p>Preencha nome, descrição, preço e categoria — Brincos, Colares, Anéis — e escolha a foto. A categoria nova aparece sozinha no site quando você cadastra a primeira peça dela.</p>
+        <p>O que você salva já vale no site local na hora. Dá para conferir tudo antes de mandar para a internet.</p>
+      </div>
+
+      <div class="step">
+        <h3>Clique em Publicar</h3>
+        <p>É o que manda tudo para o site na internet. Depois de aparecer a confirmação, o site leva de um a dois minutos para mostrar as novidades.</p>
+        <p>Esse mesmo botão também <strong>traz</strong> o que a outra pessoa publicou. Então, se quiser só conferir se tem coisa nova, clique em Publicar: se não houver nada seu para enviar, ele avisa e atualiza o seu catálogo.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>Quando duas pessoas mexem juntas</h2>
+    <p class="section-note">Vocês dois publicam no mesmo catálogo, cada um do seu Mac. O painel junta as duas versões sozinho — mas vale saber quem ganha em cada situação.</p>
+
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Situação</th>
+            <th>O que acontece</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cada um cadastra peças diferentes</td>
+            <td>As duas entram no site. Nada se perde.</td>
+          </tr>
+          <tr>
+            <td>Os dois editam <em>a mesma</em> peça</td>
+            <td>Vale a versão de quem clicou em Publicar por último.</td>
+          </tr>
+          <tr>
+            <td>Um apaga a peça, o outro edita</td>
+            <td>A peça é apagada. A exclusão vence.</td>
+          </tr>
+          <tr>
+            <td>Um publica enquanto o outro cadastra</td>
+            <td>Sem problema. Ao publicar, o painel busca o que mudou e junta antes de enviar.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <strong>Combinem por fora quem cuida do quê.</strong> O painel resolve a mecânica, mas não sabe qual das duas versões de um mesmo colar é a certa. Editar peças diferentes evita a dúvida.
+    </div>
+  </section>
+
+  <section>
+    <h2>O que as mensagens querem dizer</h2>
+    <p class="section-note">O painel fala em português e diz o que fazer. Estas são as que mais aparecem.</p>
+
+    <div class="msgs">
+      <div class="msg">
+        <p class="said">Publicado com sucesso no GitHub Pages!</p>
+        <p class="means">Deu tudo certo. Espere um ou dois minutos e recarregue o site.</p>
+      </div>
+      <div class="msg">
+        <p class="said">Publicado! As alterações da outra máquina foram juntadas ao seu catálogo — recarregue a página para vê-las.</p>
+        <p class="means">A outra pessoa também tinha publicado. As duas versões foram juntadas e enviadas. Recarregue o painel para ver as peças dela.</p>
+      </div>
+      <div class="msg">
+        <p class="said">Nada seu para enviar, mas trouxe o que a outra máquina publicou.</p>
+        <p class="means">Você não tinha nada novo, mas o catálogo foi atualizado com as peças da outra pessoa.</p>
+      </div>
+      <div class="msg">
+        <p class="said">Este computador ainda não está liberado para publicar.</p>
+        <p class="means">Falta o passo 3 da instalação. Rode o <code>instalar.command</code> de novo, copie a chave que ele mostra no final e mande para o Rafael.</p>
+      </div>
+      <div class="msg">
+        <p class="said">Sem conexão com a internet.</p>
+        <p class="means">O painel não conseguiu falar com o GitHub. Confira o wi-fi e clique em Publicar de novo. Suas peças continuam salvas.</p>
+      </div>
+      <div class="msg">
+        <p class="said">A outra máquina publicou alterações que batem de frente com as suas.</p>
+        <p class="means">Raro. As duas versões mudaram coisas que o painel não conseguiu juntar com segurança, então ele preferiu não enviar nada. Nada foi perdido — chame o Rafael.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Para o Rafael: liberar um Mac</h2>
+    <p class="section-note">Quando a chave chegar. Feito uma vez por máquina.</p>
+
+    <h3>Pelo site do GitHub</h3>
+    <p>No repositório, vá em <strong>Settings → Deploy keys → Add deploy key</strong>. Dê um título que identifique a máquina, cole a chave recebida e — o passo que importa — marque <strong>Allow write access</strong>. Sem isso a pessoa consegue ler, mas não publicar.</p>
+
+    <h3>Pelo terminal</h3>
+    <p>Salve a chave recebida num arquivo e rode:</p>
+    <div class="term">gh repo deploy-key add chave.pub <span>\</span><br>
+      &nbsp;&nbsp;--repo rafaelcsouza1/divina-lolla <span>\</span><br>
+      &nbsp;&nbsp;--allow-write --title "Mac da Ana"</div>
+    <p>Para conferir ou remover depois: <code>gh repo deploy-key list</code> e <code>gh repo deploy-key delete</code>. A chave vale só para este repositório e pode ser revogada a qualquer momento, sem afetar mais nada.</p>
+
+    <div class="note">
+      <strong>Chave adicionada pelo terminal fica presa ao seu login do GitHub CLI.</strong> Se você desautorizar o GitHub CLI da sua conta, as chaves criadas por ele saem junto e a outra máquina para de publicar. Pelo site do GitHub isso não acontece.
+    </div>
+  </section>
+
+  <footer>
+    Divina Lolla · o site é publicado pelo GitHub Pages a partir da pasta <code>docs</code> do repositório <code>rafaelcsouza1/divina-lolla</code>.
+  </footer>
+
+</div>
+</body>
+</html>

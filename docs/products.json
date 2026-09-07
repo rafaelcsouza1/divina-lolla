@@ -9,8 +9,7 @@
     "interestTemplate": "Olá! Tenho interesse no produto:\n*{nome}*{preco}\nEle ainda está disponível?"
   },
   "categories": [
-    "Brincos",
-    "ROlas"
+    "Brincos"
   ],
   "products": [
     {
@@ -22,12 +21,12 @@
       "price": "20"
     },
     {
-      "id": "e8524c65-653e-4e3b-9d70-9a2e283e2b98",
-      "name": "15 cm",
+      "category": "",
       "description": "",
-      "price": "10",
-      "category": "ROlas",
-      "image": ""
+      "id": "e8524c65-653e-4e3b-9d70-9a2e283e2b98",
+      "image": "",
+      "name": "15 cm",
+      "price": "10"
     }
   ]
 }

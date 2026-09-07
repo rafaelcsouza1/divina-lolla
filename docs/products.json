@@ -92,6 +92,14 @@
       "price": "10",
       "category": "Acessórios de cabelo",
       "image": "images/f6db0f00-e023-4379-a5a3-77c382684b92.png"
+    },
+    {
+      "id": "f93bdfaa-1b15-44aa-9298-94438e971524",
+      "name": "Presilha coelhinho cherry",
+      "description": "",
+      "price": "10",
+      "category": "Acessórios de cabelo",
+      "image": "images/f93bdfaa-1b15-44aa-9298-94438e971524.png"
     }
   ]
 }

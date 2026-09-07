@@ -3,11 +3,31 @@
 # Dê dois cliques neste arquivo (ou rode: ./iniciar.command)
 cd "$(dirname "$0")"
 
-echo "Verificando Python..."
-if ! command -v python3 >/dev/null 2>&1; then
-  echo "ERRO: Python 3 não encontrado. Instale em https://python.org"
+echo "Verificando o que o painel precisa..."
+# Num Mac sem as Ferramentas de Linha de Comando, /usr/bin/python3 e /usr/bin/git
+# existem como atalhos que não rodam. Por isso o teste executa cada um em vez de
+# só procurar o caminho.
+if ! python3 --version >/dev/null 2>&1; then
+  echo ""
+  echo "ERRO: o Python não está disponível neste Mac."
+  echo ""
+  echo "Ele vem nas Ferramentas de Linha de Comando da Apple, junto com o Git,"
+  echo "que o painel também usa para publicar. Uma janela vai abrir pedindo"
+  echo "para instalar: clique em \"Instalar\", espere terminar (leva alguns"
+  echo "minutos) e dê dois cliques neste arquivo de novo."
+  xcode-select --install >/dev/null 2>&1
+  echo ""
   read -n 1 -s -r -p "Pressione qualquer tecla para sair..."
   exit 1
+fi
+
+if ! git --version >/dev/null 2>&1; then
+  echo ""
+  echo "AVISO: o Git não está disponível, então o botão Publicar não vai funcionar."
+  echo "O painel abre normalmente e suas peças ficam salvas. Para publicar,"
+  echo "instale as Ferramentas de Linha de Comando da Apple com o comando:"
+  echo "  xcode-select --install"
+  echo ""
 fi
 
 if [ ! -d "venv" ]; then

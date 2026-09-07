@@ -332,6 +332,15 @@ def put_config():
         cfg["server"]["port"] = 5001
     if cfg["dataSource"]["mode"] not in ("local", "remote"):
         cfg["dataSource"]["mode"] = "local"
+    # Servidor remoto sem URL deixaria o painel sem de onde ler os produtos, e
+    # a tela abriria vazia sem explicar por quê.
+    if cfg["dataSource"]["mode"] == "remote" and not (cfg["dataSource"].get("remoteUrl") or "").strip():
+        return jsonify({
+            "ok": False,
+            "error": "Para usar um servidor remoto, informe a URL do catálogo. "
+                     "Sem ela o painel não teria de onde ler os produtos. "
+                     "Se você não tem um servidor, use \"Arquivo local\".",
+        }), 400
     save_config(cfg)
     return jsonify({"ok": True, "config": cfg, "restart_required": True})
 

@@ -51,6 +51,14 @@
       "price": "10",
       "category": "Brincos divertidos",
       "image": "images/c059c129-b84a-4e3e-99a0-19313f64871d.png"
+    },
+    {
+      "id": "0ea71e9c-5b3a-4265-ba04-9df8e47f9434",
+      "name": "Brinco guaraná",
+      "description": "",
+      "price": "10",
+      "category": "Brincos divertidos",
+      "image": "images/0ea71e9c-5b3a-4265-ba04-9df8e47f9434.png"
     }
   ]
 }

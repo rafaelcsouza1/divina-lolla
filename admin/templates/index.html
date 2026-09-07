@@ -573,7 +573,7 @@
             </div>
             <div class="form-group">
               <label>Porta</label>
-              <input type="number" id="srv-port" placeholder="5000" min="1" max="65535">
+              <input type="number" id="srv-port" placeholder="5001" min="1" max="65535">
             </div>
           </div>
           <div class="form-group">
@@ -928,7 +928,7 @@ async function loadSettings() {
   const srv = appConfig.server || {};
   const ds = appConfig.dataSource || {};
   document.getElementById('srv-host').value = srv.host || '127.0.0.1';
-  document.getElementById('srv-port').value = srv.port || 5000;
+  document.getElementById('srv-port').value = srv.port || 5001;
   document.getElementById('srv-public-url').value = srv.publicUrl || '';
   document.getElementById('srv-api-token').value = srv.apiToken || '';
   document.getElementById('ds-local-path').value = ds.localPath || '';
@@ -985,7 +985,7 @@ document.getElementById('btn-save-config').onclick = async () => {
   const payload = {
     server: {
       host: document.getElementById('srv-host').value,
-      port: parseInt(document.getElementById('srv-port').value, 10) || 5000,
+      port: parseInt(document.getElementById('srv-port').value, 10) || 5001,
       publicUrl: document.getElementById('srv-public-url').value.trim(),
       apiToken: document.getElementById('srv-api-token').value.trim(),
     },

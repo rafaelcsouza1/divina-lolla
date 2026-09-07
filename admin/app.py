@@ -23,7 +23,7 @@ ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
 DEFAULT_CONFIG = {
     "server": {
         "host": "127.0.0.1",     # use 0.0.0.0 para acessar de outros dispositivos
-        "port": 5000,
+        "port": 5001,          # 5000 é usada pelo AirPlay Receiver no macOS
         "publicUrl": "",         # URL pública do admin quando hospedado num servidor
         "apiToken": "",          # token exigido de quem conectar neste catálogo remotamente
     },
@@ -297,7 +297,7 @@ def put_config():
     try:
         cfg["server"]["port"] = int(cfg["server"]["port"])
     except (TypeError, ValueError):
-        cfg["server"]["port"] = 5000
+        cfg["server"]["port"] = 5001
     if cfg["dataSource"]["mode"] not in ("local", "remote"):
         cfg["dataSource"]["mode"] = "local"
     save_config(cfg)
@@ -415,7 +415,7 @@ if __name__ == "__main__":
 
     cfg = load_config()
     host = cfg["server"].get("host", "127.0.0.1")
-    port = int(cfg["server"].get("port", 5000))
+    port = int(cfg["server"].get("port", 5001))
     open_host = "localhost" if host in ("0.0.0.0", "127.0.0.1", "") else host
 
     def open_browser():

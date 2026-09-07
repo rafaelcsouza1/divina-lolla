@@ -23,7 +23,6 @@ pip install -r requirements.txt --quiet
 
 echo ""
 echo "Iniciando Divina Lolla Admin..."
-echo "Acesse: http://localhost:5000"
 echo "Pressione Ctrl+C para parar."
 echo ""
 

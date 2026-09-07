@@ -409,6 +409,82 @@
       outline: none;
     }
     .add-category-row input:focus { border-color: var(--primary); }
+    /* ── Celular ────────────────────────────────────────────────────────────
+       O painel foi desenhado para tela grande: a sidebar é fixa com 240px e o
+       conteúdo vive num margin-left do mesmo tamanho. No telefone ela vira
+       topo grudado, mantendo o Publicar a um toque, e a navegação desce para
+       uma faixa que rola na horizontal. */
+    @media (max-width: 760px) {
+      .layout { flex-direction: column; }
+
+      .sidebar {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        overflow: visible;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .sidebar-logo { flex: 1; padding: 12px 16px; border-bottom: none; }
+      .sidebar-logo .name { font-size: 1rem; }
+
+      .sidebar-footer { padding: 12px 16px; border-top: none; }
+      .btn-publish { width: auto; padding: 12px 18px; }
+
+      .nav {
+        order: 3;
+        flex: 0 0 100%;
+        display: flex;
+        gap: 6px;
+        padding: 0 10px 10px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .nav-item {
+        margin-bottom: 0;
+        min-height: 44px;
+        white-space: nowrap;
+      }
+
+      .main { margin-left: 0; }
+
+      .topbar { padding: 14px 16px; flex-wrap: wrap; gap: 10px; }
+      .topbar h1 { font-size: 1.05rem; }
+      .content { padding: 16px; }
+
+      /* Campo com fonte menor que 16px faz o iOS dar zoom ao focar, e o
+         formulário sai de lugar. */
+      .form-group input,
+      .form-group textarea,
+      .form-group select,
+      .search-wrap input { font-size: 16px; }
+
+      .search-wrap { min-width: 0; }
+
+      /* A tabela inteira não cabe: a categoria sai (ela reaparece ao editar a
+         peça) e o que sobrar rola na horizontal. */
+      .products-table { overflow-x: auto; }
+      th:nth-child(3), td:nth-child(3) { display: none; }
+      th, td { padding: 10px; }
+      .actions { gap: 6px; }
+      .btn-sm { padding: 8px 10px; }
+
+      .modal-overlay { padding: 12px; }
+      .modal { max-height: 94vh; }
+      .modal-header { padding: 16px 18px 0; }
+      .modal-body { padding: 16px 18px 20px; }
+      .modal-footer { padding: 0 18px 18px; }
+
+      .settings-card { max-width: 100%; }
+      .btn-row { flex-wrap: wrap; }
+    }
   </style>
 </head>
 <body>

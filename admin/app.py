@@ -17,6 +17,9 @@ SITE_DIR = BASE_DIR.parent / "docs"
 PRODUCTS_JSON = SITE_DIR / "products.json"
 IMAGES_DIR = SITE_DIR / "images"
 CONFIG_JSON = BASE_DIR / "config.json"
+# Credencial de publicação que viaja junto no pacote. Vale só para este
+# repositório e fica fora do controle de versão (veja o .gitignore).
+PUBLISH_KEY = BASE_DIR.parent / "chave" / "publicar"
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
 
 # ─── Config (admin-only settings; NÃO publicado no site público) ──────────────
@@ -147,9 +150,32 @@ def is_remote():
     return load_config()["dataSource"]["mode"] == "remote"
 
 
+def _git_env(extra=None):
+    """Ambiente dos comandos git, já com a credencial de publicação do pacote.
+
+    Quando a chave vem junto, o git usa só ela — nem agente SSH, nem chave
+    pessoal. É o que permite o painel publicar numa máquina onde ninguém
+    configurou GitHub à mão.
+    """
+    env = dict(os.environ)
+    if PUBLISH_KEY.exists():
+        # Descompactar o pacote costuma deixar a permissão aberta, e aí o ssh
+        # recusa a chave.
+        try:
+            os.chmod(PUBLISH_KEY, 0o600)
+        except OSError:
+            pass
+        env["GIT_SSH_COMMAND"] = (
+            f'ssh -i "{PUBLISH_KEY}" -o IdentitiesOnly=yes -o IdentityAgent=none'
+            f" -o StrictHostKeyChecking=accept-new"
+        )
+    env.update(extra or {})
+    return env
+
+
 def _git(repo_dir, *args, env=None):
     return subprocess.run(
-        ["git", *args], cwd=repo_dir, capture_output=True, text=True, env=env
+        ["git", *args], cwd=repo_dir, capture_output=True, text=True, env=_git_env(env)
     )
 
 
@@ -364,9 +390,9 @@ def _explain_git_error(stderr):
                             "temporary failure in name resolution")):
         return "Sem conexão com a internet. Conecte e tente publicar de novo."
     if "permission denied" in t or "publickey" in t:
-        return ("Este computador ainda não está liberado para publicar. Rode o "
-                "instalar.command de novo, copie a chave que ele mostra no final "
-                "e mande para o Rafael liberar o acesso.")
+        return ("O GitHub recusou a credencial de publicação. Ela pode ter sido "
+                "revogada, ou a pasta 'chave' pode ter ficado de fora ao copiar "
+                "o painel. Suas peças continuam salvas aqui — chame o Rafael.")
     if any(x in t for x in ("non-fast-forward", "fetch first", "[rejected]")):
         return ("A outra máquina publicou algo novo nesse meio-tempo. Clique em "
                 "Publicar mais uma vez para juntar as alterações e enviar.")
@@ -457,7 +483,7 @@ def _sync_with_remote(repo_dir):
     if behind.returncode != 0 or behind.stdout.strip() == "0":
         return True, False, False, None  # nada novo lá fora
 
-    env = {**os.environ, "GIT_EDITOR": "true"}
+    env = {"GIT_EDITOR": "true"}
     merged = False
     rebase = _git(repo_dir, "rebase", ref, env=env)
     for _ in range(20):

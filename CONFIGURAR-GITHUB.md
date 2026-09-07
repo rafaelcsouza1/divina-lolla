@@ -10,7 +10,7 @@ para o site online pelo botão **Publicar**.
 > A pasta se chama `docs` porque o GitHub Pages, ao publicar a partir de uma
 > branch, só aceita servir a raiz do repositório ou a pasta `/docs`.
 
-> Para instalar em outra máquina e o manual de uso, abra o MANUAL.html.
+> Manual de uso para quem cadastra as peças: abra o MANUAL.html.
 
 ## Uso no dia a dia
 
@@ -23,10 +23,26 @@ para o site online pelo botão **Publicar**.
 
 ## O que já está configurado
 
-- Repositório Git local, com `venv/` e `admin/config.json` fora do controle
-  de versão (o config pode guardar tokens, então não vai para o GitHub).
+- Repositório Git local, com `venv/`, `admin/config.json` e `chave/` fora do
+  controle de versão.
 - Repositório remoto no GitHub, via SSH.
 - GitHub Pages publicando `main` + `/docs`.
+
+## Entregar o painel para outra pessoa
+
+O painel vai empacotado num `.zip` com a credencial de publicação dentro,
+em `chave/publicar`. Quem recebe descompacta e dá dois cliques em
+`iniciar.command` — não precisa configurar nada.
+
+Essa credencial é uma *deploy key* com escrita **apenas neste
+repositório**: não alcança a conta nem outros repos. Mas é compartilhada,
+então trate o `.zip` como uma senha. Para revogar:
+
+    gh repo deploy-key list --repo rafaelcsouza1/divina-lolla
+    gh repo deploy-key delete <id> --repo rafaelcsouza1/divina-lolla
+
+Para gerar um pacote novo (por exemplo, depois de revogar e criar outra
+credencial), rode `./empacotar.command`.
 
 ## Domínio próprio (opcional)
 

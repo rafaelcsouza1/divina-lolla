@@ -109,7 +109,7 @@
     margin: 0;
   }
 
-  /* ── Ficha de endereços ───────────────────────────────── */
+  /* ── Ficha ────────────────────────────────────────────── */
   .facts {
     display: grid;
     grid-template-columns: auto 1fr;
@@ -164,7 +164,7 @@
   p { margin: .85rem 0; }
   a { color: var(--plum); }
 
-  /* ── Passos: numeral de latão pendurado na margem ─────── */
+  /* ── Passos ───────────────────────────────────────────── */
   .steps { counter-reset: step; margin-top: 1.8rem; }
 
   .step {
@@ -195,10 +195,7 @@
   }
   .step:last-child::after { display: none; }
 
-  .step h3 {
-    margin: 0 0 .3rem;
-    font-size: 1.08rem;
-  }
+  .step h3 { margin: 0 0 .3rem; font-size: 1.08rem; }
   .step p { margin: .5rem 0; }
 
   /* ── Terminal ─────────────────────────────────────────── */
@@ -231,18 +228,13 @@
     font-size: .95rem;
   }
   .note strong { color: var(--warn); }
-
   .note.good { border-left-color: var(--ok); }
   .note.good strong { color: var(--ok); }
 
   /* ── Tabelas ──────────────────────────────────────────── */
   .tablewrap { overflow-x: auto; margin: 1.4rem 0; }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: .92rem;
-  }
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; }
   th, td {
     text-align: left;
     padding: .68rem .8rem .68rem 0;
@@ -260,11 +252,10 @@
   }
   td:last-child, th:last-child { padding-right: 0; }
 
-  /* ── Mensagens do painel ──────────────────────────────── */
+  /* ── Mensagens ────────────────────────────────────────── */
   .msgs { margin: 1.4rem 0 0; }
   .msg {
     display: grid;
-    grid-template-columns: 1fr;
     gap: .3rem;
     padding: 1rem 0;
     border-bottom: 1px solid var(--rule);
@@ -275,10 +266,11 @@
     font-size: .82rem;
     line-height: 1.55;
     color: var(--ink);
+    margin: 0;
   }
   .msg .said::before { content: "“"; color: var(--mauve); }
   .msg .said::after  { content: "”"; color: var(--mauve); }
-  .msg .means { color: var(--mauve); font-size: .93rem; }
+  .msg .means { color: var(--mauve); font-size: .93rem; margin: 0; }
 
   ul { padding-left: 1.15rem; margin: .8rem 0; }
   li { margin: .35rem 0; }
@@ -311,39 +303,36 @@
       <dd><a href="https://rafaelcsouza1.github.io/divina-lolla/">rafaelcsouza1.github.io/divina-lolla</a></dd>
       <dt>Painel</dt>
       <dd><code>http://localhost:5001</code> — só abre na sua máquina</dd>
-      <dt>Instalar</dt>
-      <dd>dois cliques em <code>instalar.command</code></dd>
-      <dt>Abrir</dt>
+      <dt>Para abrir</dt>
       <dd>dois cliques em <code>iniciar.command</code></dd>
     </dl>
   </header>
 
   <section>
-    <h2>Instalação</h2>
-    <p class="section-note">Uma vez só, na primeira vez. Leva uns dois minutos.</p>
+    <h2>Primeira vez</h2>
+    <p class="section-note">Você recebeu um arquivo <code>DivinaLolla.zip</code>. Ele já vem pronto — não há nada para configurar, nem senha para digitar.</p>
 
     <div class="steps">
 
       <div class="step">
-        <h3>Abra o instalador</h3>
-        <p>Salve o arquivo <code>instalar.command</code> na sua Área de Trabalho e dê dois cliques nele.</p>
+        <h3>Descompacte o pacote</h3>
+        <p>Dois cliques no <code>DivinaLolla.zip</code>. Aparece uma pasta chamada <strong>DivinaLolla</strong>. Arraste ela para onde quiser guardar — Documentos, por exemplo.</p>
         <div class="note">
-          <strong>O Mac vai desconfiar do arquivo.</strong> Como ele veio da internet, o macOS bloqueia na primeira tentativa. Em vez de dois cliques, clique com o <em>botão direito</em> sobre o arquivo, escolha <strong>Abrir</strong>, e confirme <strong>Abrir</strong> na janela que aparecer. Isso só é necessário uma vez.
+          <strong>Mantenha a pasta inteira junta.</strong> O que permite publicar mora dentro dela. Se você tirar só o <code>iniciar.command</code> para fora, o painel abre mas não consegue mais mandar nada para o site.
         </div>
       </div>
 
       <div class="step">
-        <h3>Deixe ele trabalhar</h3>
-        <p>O instalador confere se o Mac tem o que precisa, baixa o painel para uma pasta chamada <code>DivinaLolla</code> na sua pasta de usuário, e prepara tudo.</p>
-        <p>Se faltar o Python, ele avisa e manda o endereço para baixar. Se faltar as ferramentas da Apple, ele abre a janela de instalação. Nos dois casos: instale o que ele pediu e rode o instalador de novo.</p>
+        <h3>Abra o painel</h3>
+        <p>Dentro da pasta, clique com o <strong>botão direito</strong> em <code>iniciar.command</code>, escolha <strong>Abrir</strong>, e confirme <strong>Abrir</strong> na janela que aparecer.</p>
+        <p>Esse jeito com botão direito é necessário só na primeira vez — o macOS desconfia de arquivos que vieram da internet. Depois disso, dois cliques bastam.</p>
       </div>
 
       <div class="step">
-        <h3>Mande a chave para o Rafael</h3>
-        <p>No final, o instalador mostra um texto comprido começando com <code>ssh-ed25519</code>. Essa é a chave que identifica o seu Mac.</p>
-        <p>Copie <strong>o texto inteiro</strong> e mande para o Rafael. Ele libera o acesso e avisa quando estiver pronto.</p>
+        <h3>Espere um minuto</h3>
+        <p>Na primeira abertura o painel prepara o que precisa. Uma janela preta de texto mostra o progresso; é normal. Quando terminar, o navegador abre sozinho no painel.</p>
         <div class="note good">
-          <strong>Não precisa esperar para começar.</strong> O painel já funciona sem a liberação: você pode cadastrar as peças e ver como o site vai ficar. Só o botão Publicar fica esperando.
+          <strong>Pronto — já dá para publicar.</strong> A permissão de publicar no site já vem dentro do pacote. Não precisa pedir acesso a ninguém nem esperar liberação.
         </div>
       </div>
 
@@ -357,20 +346,19 @@
 
       <div class="step">
         <h3>Abra o painel</h3>
-        <p>Dois cliques em <code>iniciar.command</code>, dentro da pasta <code>DivinaLolla</code>. O navegador abre sozinho no painel.</p>
-        <p>Uma janela preta de texto fica aberta atrás — é o painel funcionando. Deixe ela aberta enquanto estiver trabalhando; para encerrar, feche a janela.</p>
+        <p>Dois cliques em <code>iniciar.command</code>. O navegador abre no painel, e a janela preta fica aberta atrás — é o painel funcionando. Para encerrar, feche a janela preta.</p>
       </div>
 
       <div class="step">
         <h3>Cadastre as peças</h3>
-        <p>Preencha nome, descrição, preço e categoria — Brincos, Colares, Anéis — e escolha a foto. A categoria nova aparece sozinha no site quando você cadastra a primeira peça dela.</p>
-        <p>O que você salva já vale no site local na hora. Dá para conferir tudo antes de mandar para a internet.</p>
+        <p>Preencha nome, descrição, preço e categoria — Brincos, Colares, Anéis — e escolha a foto. Categoria nova aparece sozinha no site quando você cadastra a primeira peça dela.</p>
+        <p>O que você salva já vale no site local na hora, então dá para conferir tudo antes de mandar para a internet.</p>
       </div>
 
       <div class="step">
         <h3>Clique em Publicar</h3>
-        <p>É o que manda tudo para o site na internet. Depois de aparecer a confirmação, o site leva de um a dois minutos para mostrar as novidades.</p>
-        <p>Esse mesmo botão também <strong>traz</strong> o que a outra pessoa publicou. Então, se quiser só conferir se tem coisa nova, clique em Publicar: se não houver nada seu para enviar, ele avisa e atualiza o seu catálogo.</p>
+        <p>É o que manda tudo para o site na internet. Depois da confirmação, o site leva de um a dois minutos para mostrar as novidades.</p>
+        <p>Esse mesmo botão também <strong>traz</strong> o que a outra pessoa publicou. Para só conferir se tem coisa nova, clique nele: se não houver nada seu para enviar, ele avisa e atualiza o seu catálogo.</p>
       </div>
 
     </div>
@@ -378,15 +366,12 @@
 
   <section>
     <h2>Quando duas pessoas mexem juntas</h2>
-    <p class="section-note">Vocês dois publicam no mesmo catálogo, cada um do seu Mac. O painel junta as duas versões sozinho — mas vale saber quem ganha em cada situação.</p>
+    <p class="section-note">Vocês publicam no mesmo catálogo, cada um do seu Mac. O painel junta as duas versões sozinho — mas vale saber quem ganha em cada situação.</p>
 
     <div class="tablewrap">
       <table>
         <thead>
-          <tr>
-            <th>Situação</th>
-            <th>O que acontece</th>
-          </tr>
+          <tr><th>Situação</th><th>O que acontece</th></tr>
         </thead>
         <tbody>
           <tr>
@@ -432,37 +417,38 @@
         <p class="means">Você não tinha nada novo, mas o catálogo foi atualizado com as peças da outra pessoa.</p>
       </div>
       <div class="msg">
-        <p class="said">Este computador ainda não está liberado para publicar.</p>
-        <p class="means">Falta o passo 3 da instalação. Rode o <code>instalar.command</code> de novo, copie a chave que ele mostra no final e mande para o Rafael.</p>
-      </div>
-      <div class="msg">
         <p class="said">Sem conexão com a internet.</p>
         <p class="means">O painel não conseguiu falar com o GitHub. Confira o wi-fi e clique em Publicar de novo. Suas peças continuam salvas.</p>
+      </div>
+      <div class="msg">
+        <p class="said">O GitHub recusou a credencial de publicação.</p>
+        <p class="means">Costuma ser pasta incompleta: o painel foi copiado sem tudo que estava junto. Use a pasta inteira que veio no pacote. Se persistir, chame o Rafael — pode ser que a permissão tenha sido trocada.</p>
       </div>
       <div class="msg">
         <p class="said">A outra máquina publicou alterações que batem de frente com as suas.</p>
         <p class="means">Raro. As duas versões mudaram coisas que o painel não conseguiu juntar com segurança, então ele preferiu não enviar nada. Nada foi perdido — chame o Rafael.</p>
       </div>
     </div>
+
+    <h3>O duplo clique não faz nada</h3>
+    <p>Se o <code>iniciar.command</code> não abre nem com o botão direito, é porque o arquivo perdeu a marca de "programa" no caminho. Abra o app <strong>Terminal</strong>, escreva <code>chmod +x</code> seguido de um espaço, arraste o <code>iniciar.command</code> para dentro da janela e aperte Enter. Depois tente de novo.</p>
   </section>
 
   <section>
-    <h2>Para o Rafael: liberar um Mac</h2>
-    <p class="section-note">Quando a chave chegar. Feito uma vez por máquina.</p>
+    <h2>Para o Rafael: entregar e revogar</h2>
+    <p class="section-note">Como o pacote é montado e como cortar o acesso de quem já recebeu.</p>
 
-    <h3>Pelo site do GitHub</h3>
-    <p>No repositório, vá em <strong>Settings → Deploy keys → Add deploy key</strong>. Dê um título que identifique a máquina, cole a chave recebida e — o passo que importa — marque <strong>Allow write access</strong>. Sem isso a pessoa consegue ler, mas não publicar.</p>
-
-    <h3>Pelo terminal</h3>
-    <p>Salve a chave recebida num arquivo e rode:</p>
-    <div class="term">gh repo deploy-key add chave.pub <span>\</span><br>
-      &nbsp;&nbsp;--repo rafaelcsouza1/divina-lolla <span>\</span><br>
-      &nbsp;&nbsp;--allow-write --title "Mac da Ana"</div>
-    <p>Para conferir ou remover depois: <code>gh repo deploy-key list</code> e <code>gh repo deploy-key delete</code>. A chave vale só para este repositório e pode ser revogada a qualquer momento, sem afetar mais nada.</p>
-
+    <h3>Montar um pacote</h3>
+    <p>Na sua cópia do projeto, dois cliques em <code>empacotar.command</code>. Ele gera <code>DivinaLolla.zip</code> na Área de Trabalho, já com a credencial de publicação dentro e sem o ambiente Python, que é recriado no destino.</p>
     <div class="note">
-      <strong>Chave adicionada pelo terminal fica presa ao seu login do GitHub CLI.</strong> Se você desautorizar o GitHub CLI da sua conta, as chaves criadas por ele saem junto e a outra máquina para de publicar. Pelo site do GitHub isso não acontece.
+      <strong>O pacote é uma senha.</strong> Quem tiver o <code>.zip</code> pode publicar no catálogo. Entregue por canal privado — não poste em grupo nem em pasta de nuvem compartilhada.
     </div>
+
+    <h3>Revogar o acesso</h3>
+    <p>A credencial é uma <em>deploy key</em> com escrita apenas no repositório do catálogo: não alcança sua conta nem seus outros projetos. Para listar e remover:</p>
+    <div class="term">gh repo deploy-key list --repo rafaelcsouza1/divina-lolla<br>
+      gh repo deploy-key delete &lt;id&gt; --repo rafaelcsouza1/divina-lolla</div>
+    <p>Removida a chave, todo pacote que a carregava para de publicar na hora. Para seguir com a operação, gere outra credencial e monte um pacote novo.</p>
   </section>
 
   <footer>

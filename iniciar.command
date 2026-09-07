@@ -19,7 +19,7 @@ echo "Ativando ambiente virtual..."
 source venv/bin/activate
 
 echo "Instalando dependências..."
-pip install -r requirements.txt --quiet
+pip install -r requirements.txt --quiet --disable-pip-version-check
 
 echo ""
 echo "Iniciando Divina Lolla Admin..."

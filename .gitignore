@@ -7,5 +7,10 @@ __pycache__/
 # O app recria com os valores padrão se o arquivo não existir.
 admin/config.json
 
+# Credencial de publicação. NUNCA versionar: o repositório é público, e quem
+# tiver esta chave pode publicar no catálogo. Ela viaja apenas dentro do
+# pacote .zip entregue a cada pessoa.
+chave/
+
 # macOS
 .DS_Store

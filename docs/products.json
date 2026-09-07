@@ -28,14 +28,6 @@
       "price": "10",
       "category": "ROlas",
       "image": ""
-    },
-    {
-      "id": "TESTE-PACOTE",
-      "name": "TESTE PACOTE",
-      "description": "verificacao",
-      "price": "1",
-      "category": "Testes",
-      "image": ""
     }
   ]
 }

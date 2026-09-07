@@ -8,7 +8,9 @@
     "whatsapp": "",
     "interestTemplate": "Olá! Tenho interesse no produto:\n*{nome}*{preco}\nEle ainda está disponível?"
   },
-  "categories": [],
+  "categories": [
+    "Brincos divertidos"
+  ],
   "products": [
     {
       "category": "",

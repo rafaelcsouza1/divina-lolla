@@ -75,6 +75,14 @@
       "price": "10",
       "category": "Brincos divertidos",
       "image": "images/e92742b4-a1f2-4016-815f-c7b916a23927.png"
+    },
+    {
+      "id": "428b90cb-e6a3-43ef-8e11-8bf112ed5ec8",
+      "name": "Brinco sapo",
+      "description": "",
+      "price": "10",
+      "category": "Brincos divertidos",
+      "image": "images/428b90cb-e6a3-43ef-8e11-8bf112ed5ec8.png"
     }
   ]
 }

@@ -9,9 +9,9 @@
     "interestTemplate": "Olá! Tenho interesse no produto:\n*{nome}*{preco}\nEle ainda está disponível?"
   },
   "categories": [
-    "Brincos divertidos",
     "Acessórios de cabelo",
-    "Amuletos"
+    "Amuletos",
+    "Brincos divertidos"
   ],
   "products": [
     {
@@ -122,7 +122,7 @@
       "id": "cdecbeb8-3511-4015-9765-1621c5749385",
       "name": "Amuleto de proteção e boas energias",
       "description": "4,5cm altura",
-      "price": "10",
+      "price": "18",
       "category": "Amuletos",
       "image": "images/cdecbeb8-3511-4015-9765-1621c5749385.png"
     }

@@ -147,6 +147,12 @@ def is_remote():
     return load_config()["dataSource"]["mode"] == "remote"
 
 
+def _git(repo_dir, *args, env=None):
+    return subprocess.run(
+        ["git", *args], cwd=repo_dir, capture_output=True, text=True, env=env
+    )
+
+
 def _store_image(product_id, file):
     """Salva a imagem. Local: arquivo em docs/images. Remoto: data URI embutido."""
     ext = Path(file.filename).suffix.lower()
@@ -347,7 +353,150 @@ def catalog_put():
     return jsonify({"ok": True})
 
 
+# ─── Juntar catálogos que foram editados em paralelo ──────────────────────────
+def _merge_names(base, remote, local):
+    """Une duas listas de nomes respeitando o que cada lado removeu."""
+    b, r, l = set(base), set(remote), set(local)
+    keep = (r | l) - (b - (r & l))
+    return [n for n in remote if n in keep] + [n for n in local if n in keep and n not in remote]
+
+
+def _by_id(catalog):
+    return {p["id"]: p for p in catalog.get("products", []) if p.get("id")}
+
+
+def _merge_catalog(base, remote, local):
+    """Combina dois catálogos editados ao mesmo tempo em máquinas diferentes.
+
+    Produtos são aditivos: o que cada máquina cadastrou é preservado. O que já
+    existia e saiu de um dos lados conta como exclusão. Quando as duas mexeram
+    no mesmo produto, vale a versão de quem está publicando agora.
+    """
+    b, r, l = _by_id(base), _by_id(remote), _by_id(local)
+
+    order = [p["id"] for p in remote.get("products", []) if p.get("id")]
+    order += [p["id"] for p in local.get("products", []) if p.get("id") and p["id"] not in order]
+
+    products = []
+    for pid in order:
+        if pid in b and (pid not in r or pid not in l):
+            continue  # apagado de um dos lados
+        if pid in r and pid in l:
+            products.append(l[pid] if l[pid] != b.get(pid) else r[pid])
+        else:
+            products.append(l[pid] if pid in l else r[pid])
+
+    merged = dict(local)  # loja e contato: vale quem publica
+    merged["products"] = products
+    merged["categories"] = _merge_names(
+        base.get("categories", []), remote.get("categories", []), local.get("categories", [])
+    )
+    return _normalize(merged)
+
+
+def _catalog_stage(repo_dir, stage, rel_path):
+    """Lê uma das versões do arquivo em conflito (1=base, 2=remoto, 3=local)."""
+    out = _git(repo_dir, "show", f":{stage}:{rel_path}")
+    if out.returncode != 0 or not out.stdout.strip():
+        # Sem base: o arquivo foi criado nos dois lados. Catálogo vazio como base
+        # faz a junção virar simples união, que é o desejado.
+        return json.loads(json.dumps(DEFAULT_CATALOG))
+    try:
+        return _normalize(json.loads(out.stdout))
+    except json.JSONDecodeError:
+        return None
+
+
+def _resolve_catalog_conflict(repo_dir, unmerged):
+    """Resolve o conflito do products.json juntando os dois catálogos.
+
+    Só age quando o products.json é o único arquivo em conflito: para qualquer
+    outra coisa é mais seguro abortar e avisar do que adivinhar.
+    """
+    rel = PRODUCTS_JSON.relative_to(repo_dir).as_posix()
+    if unmerged != [rel]:
+        return False
+    versions = [_catalog_stage(repo_dir, n, rel) for n in (1, 2, 3)]
+    if any(v is None for v in versions):
+        return False
+    base, remote, local = versions
+    with open(PRODUCTS_JSON, "w", encoding="utf-8") as f:
+        json.dump(_merge_catalog(base, remote, local), f, ensure_ascii=False, indent=2)
+    return _git(repo_dir, "add", rel).returncode == 0
+
+
+def _sync_with_remote(repo_dir):
+    """Traz o que a outra máquina publicou. Devolve (ok, pulled, merged, erro)."""
+    fetch = _git(repo_dir, "fetch", "origin")
+    if fetch.returncode != 0:
+        return False, False, False, (
+            fetch.stderr.strip() or "Não foi possível falar com o GitHub. Confira a internet."
+        )
+
+    upstream = _git(repo_dir, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
+    ref = upstream.stdout.strip() if upstream.returncode == 0 else "origin/main"
+
+    behind = _git(repo_dir, "rev-list", "--count", f"HEAD..{ref}")
+    if behind.returncode != 0 or behind.stdout.strip() == "0":
+        return True, False, False, None  # nada novo lá fora
+
+    env = {**os.environ, "GIT_EDITOR": "true"}
+    merged = False
+    rebase = _git(repo_dir, "rebase", ref, env=env)
+    for _ in range(20):
+        if rebase.returncode == 0:
+            return True, True, merged, None
+        unmerged = _git(repo_dir, "diff", "--name-only", "--diff-filter=U").stdout.split()
+        if not unmerged:
+            # Parou sem conflito: a alteração já existe lá. Pula esse passo.
+            rebase = _git(repo_dir, "rebase", "--skip", env=env)
+        elif _resolve_catalog_conflict(repo_dir, unmerged):
+            merged = True
+            rebase = _git(repo_dir, "rebase", "--continue", env=env)
+        else:
+            break
+
+    _git(repo_dir, "rebase", "--abort")
+    return False, False, False, (
+        "A outra máquina publicou alterações que batem de frente com as suas. "
+        "Nada foi perdido: suas edições continuam salvas aqui. Para resolver, "
+        "abra a pasta do projeto no terminal e rode: git status"
+    )
+
+
 # ─── Publicação no GitHub Pages ───────────────────────────────────────────────
+def _repo_ready(repo_dir):
+    inside = _git(repo_dir, "rev-parse", "--is-inside-work-tree")
+    return inside.returncode == 0
+
+
+@app.route("/api/sync", methods=["POST"])
+def sync():
+    """Baixa o que as outras máquinas publicaram, sem enviar nada."""
+    repo_dir = SITE_DIR.parent
+    if not _repo_ready(repo_dir):
+        return jsonify({"ok": False, "error": "Não há repositório GitHub configurado."})
+    try:
+        # Guarda edições ainda não publicadas para o rebase poder rodar.
+        _git(repo_dir, "add", "-A")
+        if _git(repo_dir, "diff", "--cached", "--quiet").returncode != 0:
+            _git(repo_dir, "commit", "-m", "Alterações locais antes de sincronizar")
+        ok, pulled, merged, err = _sync_with_remote(repo_dir)
+        if not ok:
+            return jsonify({"ok": False, "error": err})
+        if not pulled:
+            return jsonify({"ok": True, "message": "Você já está com a versão mais recente."})
+        return jsonify({
+            "ok": True,
+            "changed": True,
+            "message": ("Alterações da outra máquina juntadas ao seu catálogo. "
+                        if merged else "Catálogo atualizado com o que a outra máquina publicou. ")
+                       + "Recarregue a página para ver.",
+        })
+    except FileNotFoundError:
+        return jsonify({"ok": False, "error": "Git não encontrado. Rode: xcode-select --install"})
+
+
 @app.route("/api/publish", methods=["POST"])
 def publish():
     body = request.json or {}
@@ -356,11 +505,7 @@ def publish():
 
     # "Publicar" só faz sentido para enviar ao site online (GitHub Pages).
     # Localmente o catálogo já é atualizado ao salvar — não precisa publicar.
-    inside = subprocess.run(
-        ["git", "rev-parse", "--is-inside-work-tree"],
-        cwd=repo_dir, capture_output=True, text=True
-    )
-    if inside.returncode != 0:
+    if not _repo_ready(repo_dir):
         return jsonify({
             "ok": False,
             "local_only": True,
@@ -370,25 +515,47 @@ def publish():
         })
 
     try:
-        subprocess.run(["git", "add", "-A"], cwd=repo_dir, check=True, capture_output=True)
-        result = subprocess.run(
-            ["git", "diff", "--cached", "--quiet"],
-            cwd=repo_dir, capture_output=True
-        )
-        if result.returncode == 0:
+        _git(repo_dir, "add", "-A")
+        nothing_new = _git(repo_dir, "diff", "--cached", "--quiet").returncode == 0
+        if not nothing_new:
+            commit = _git(repo_dir, "commit", "-m", message)
+            if commit.returncode != 0:
+                return jsonify({
+                    "ok": False,
+                    "error": commit.stderr.strip() or "Erro ao registrar as alterações.",
+                })
+
+        # Outra máquina pode ter publicado nesse meio-tempo: junta antes de enviar,
+        # senão o push é recusado pelo GitHub.
+        ok, pulled, merged, err = _sync_with_remote(repo_dir)
+        if not ok:
+            return jsonify({"ok": False, "error": err})
+
+        ahead = _git(repo_dir, "rev-list", "--count", "@{u}..HEAD")
+        if ahead.returncode == 0 and ahead.stdout.strip() == "0":
+            if pulled:
+                return jsonify({
+                    "ok": True,
+                    "changed": True,
+                    "message": "Nada seu para enviar, mas trouxe o que a outra máquina publicou. "
+                               "Recarregue a página para ver.",
+                })
             return jsonify({"ok": True, "message": "Nenhuma alteração para publicar."})
 
-        subprocess.run(["git", "commit", "-m", message], cwd=repo_dir, check=True, capture_output=True)
-        push = subprocess.run(["git", "push"], cwd=repo_dir, capture_output=True, text=True)
-
+        push = _git(repo_dir, "push")
         if push.returncode != 0:
-            return jsonify({"ok": False, "error": push.stderr or "Erro ao enviar para GitHub."})
+            return jsonify({"ok": False, "error": push.stderr.strip() or "Erro ao enviar para GitHub."})
 
+        if merged:
+            return jsonify({
+                "ok": True,
+                "changed": True,
+                "message": "Publicado! As alterações da outra máquina foram juntadas ao seu "
+                           "catálogo — recarregue a página para vê-las.",
+            })
         return jsonify({"ok": True, "message": "Publicado com sucesso no GitHub Pages!"})
-    except subprocess.CalledProcessError as e:
-        return jsonify({"ok": False, "error": e.stderr.decode() if e.stderr else str(e)})
     except FileNotFoundError:
-        return jsonify({"ok": False, "error": "Git não encontrado. Instale o Git e configure o repositório."})
+        return jsonify({"ok": False, "error": "Git não encontrado. Rode: xcode-select --install"})
 
 
 @app.route("/api/git-status")

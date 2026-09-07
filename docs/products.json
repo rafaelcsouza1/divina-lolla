@@ -182,6 +182,14 @@
       "price": "20",
       "category": "Pulseiras de aço inox",
       "image": "images/0bb7ca7f-c644-4628-ac86-ff9693e1681d.png"
+    },
+    {
+      "id": "8ae3084a-ed5f-4a81-b1f0-8b7a50da96e2",
+      "name": "Kit presilhas oncinha",
+      "description": "",
+      "price": "10",
+      "category": "Acessórios de cabelo",
+      "image": "images/8ae3084a-ed5f-4a81-b1f0-8b7a50da96e2.png"
     }
   ]
 }

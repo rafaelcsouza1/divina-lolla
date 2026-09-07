@@ -142,6 +142,14 @@
       "price": "20",
       "category": "Pulseiras de aço inox",
       "image": "images/61fb8b03-240d-4f8d-9de8-03facb58a5ca.png"
+    },
+    {
+      "id": "3c4462d7-83e6-4a9a-a47f-14658d55cb67",
+      "name": "Pulseira trevo",
+      "description": "",
+      "price": "20",
+      "category": "Pulseiras de aço inox",
+      "image": "images/3c4462d7-83e6-4a9a-a47f-14658d55cb67.png"
     }
   ]
 }

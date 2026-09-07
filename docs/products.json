@@ -43,6 +43,14 @@
       "price": "10",
       "category": "Brincos divertidos",
       "image": "images/f212d2fe-dc35-4314-bb4d-e0ee65979a1d.png"
+    },
+    {
+      "id": "c059c129-b84a-4e3e-99a0-19313f64871d",
+      "name": "Brinco smile",
+      "description": "",
+      "price": "10",
+      "category": "Brincos divertidos",
+      "image": "images/c059c129-b84a-4e3e-99a0-19313f64871d.png"
     }
   ]
 }

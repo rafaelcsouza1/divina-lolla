@@ -100,6 +100,14 @@
       "price": "10",
       "category": "Acessórios de cabelo",
       "image": "images/f93bdfaa-1b15-44aa-9298-94438e971524.png"
+    },
+    {
+      "id": "4e8ad137-7518-43f4-b62f-0b45d6e35695",
+      "name": "Mini piranha cereja",
+      "description": "",
+      "price": "10",
+      "category": "Acessórios de cabelo",
+      "image": "images/4e8ad137-7518-43f4-b62f-0b45d6e35695.png"
     }
   ]
 }

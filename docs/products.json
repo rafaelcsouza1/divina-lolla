@@ -117,6 +117,14 @@
       "price": "18",
       "category": "Amuletos",
       "image": "images/88efd832-b140-4087-be35-4439da3dcee5.png"
+    },
+    {
+      "id": "cdecbeb8-3511-4015-9765-1621c5749385",
+      "name": "Amuleto de proteção e boas energias",
+      "description": "4,5cm altura",
+      "price": "10",
+      "category": "Amuletos",
+      "image": "images/cdecbeb8-3511-4015-9765-1621c5749385.png"
     }
   ]
 }

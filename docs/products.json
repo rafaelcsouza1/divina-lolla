@@ -198,6 +198,14 @@
       "price": "5",
       "category": "Acessórios de cabelo",
       "image": "images/c6c1810c-4d10-4111-842b-f34af7cb8c7f.png"
+    },
+    {
+      "id": "4e829472-5390-4cf9-a4f1-9fb5411b361e",
+      "name": "Piranha com cristais roxo",
+      "description": "",
+      "price": "10",
+      "category": "Acessórios de cabelo",
+      "image": "images/4e829472-5390-4cf9-a4f1-9fb5411b361e.png"
     }
   ]
 }

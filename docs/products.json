@@ -190,6 +190,14 @@
       "price": "10",
       "category": "Acessórios de cabelo",
       "image": "images/8ae3084a-ed5f-4a81-b1f0-8b7a50da96e2.png"
+    },
+    {
+      "id": "c6c1810c-4d10-4111-842b-f34af7cb8c7f",
+      "name": "Kit elásticos de cabelo tons neutros",
+      "description": "",
+      "price": "5",
+      "category": "Acessórios de cabelo",
+      "image": "images/c6c1810c-4d10-4111-842b-f34af7cb8c7f.png"
     }
   ]
 }

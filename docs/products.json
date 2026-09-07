@@ -84,6 +84,14 @@
       "image": "images/428b90cb-e6a3-43ef-8e11-8bf112ed5ec8.png",
       "name": "Brinco sapo",
       "price": "10"
+    },
+    {
+      "id": "f6db0f00-e023-4379-a5a3-77c382684b92",
+      "name": "Presilha urso",
+      "description": "Kit",
+      "price": "10",
+      "category": "Acessórios de cabelo",
+      "image": "images/f6db0f00-e023-4379-a5a3-77c382684b92.png"
     }
   ]
 }

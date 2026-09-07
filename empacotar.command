@@ -37,7 +37,15 @@ rsync -a \
   --exclude '__pycache__/' \
   --exclude '.DS_Store' \
   --exclude 'DivinaLolla.zip' \
+  --exclude 'chave/' \
   "$PROJETO"/ "$STAGE"/ || { erro "Falha ao copiar os arquivos."; exit 1; }
+
+# A pasta chave/ guarda também as credenciais do painel hospedado e a senha do
+# Render. Só a credencial do desktop pode viajar no pacote — o resto seria
+# entregar acessos que quem recebe não deveria ter.
+mkdir -p "$STAGE/chave"
+cp "$PROJETO/chave/publicar" "$PROJETO/chave/publicar.pub" "$STAGE/chave/" \
+  || { erro "Falha ao copiar a credencial de publicação."; exit 1; }
 
 # Identidade neutra: os commits feitos de outra máquina aparecem como vindos
 # do painel, não com o nome de quem montou o pacote.

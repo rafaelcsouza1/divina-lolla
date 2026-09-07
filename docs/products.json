@@ -9,88 +9,81 @@
     "interestTemplate": "Olá! Tenho interesse no produto:\n*{nome}*{preco}\nEle ainda está disponível?"
   },
   "categories": [
-    "Brincos divertidos"
+    "Brincos divertidos",
+    "Acessórios de cabelo"
   ],
   "products": [
     {
+      "category": "Brincos divertidos",
+      "description": "",
       "id": "a42fdd50-c0e7-4959-85cc-c0c93aafa589",
+      "image": "images/a42fdd50-c0e7-4959-85cc-c0c93aafa589.png",
       "name": "Brinco urso verde",
-      "description": "",
-      "price": "10",
-      "category": "Brincos divertidos",
-      "image": "images/a42fdd50-c0e7-4959-85cc-c0c93aafa589.png"
+      "price": "10"
     },
     {
+      "category": "Brincos divertidos",
+      "description": "",
       "id": "7a16f953-3726-4c46-a2d3-0fa0cb290bc7",
+      "image": "images/7a16f953-3726-4c46-a2d3-0fa0cb290bc7.png",
       "name": "Brinco gato roxo",
-      "description": "",
-      "price": "10",
-      "category": "Brincos divertidos",
-      "image": "images/7a16f953-3726-4c46-a2d3-0fa0cb290bc7.png"
+      "price": "10"
     },
     {
+      "category": "Brincos divertidos",
+      "description": "",
       "id": "552e987d-b6d5-4f26-aee2-fddbe7e0f1c5",
+      "image": "images/552e987d-b6d5-4f26-aee2-fddbe7e0f1c5.png",
       "name": "Brinco coelho",
-      "description": "",
-      "price": "10",
-      "category": "Brincos divertidos",
-      "image": "images/552e987d-b6d5-4f26-aee2-fddbe7e0f1c5.png"
+      "price": "10"
     },
     {
+      "category": "Brincos divertidos",
+      "description": "",
       "id": "f212d2fe-dc35-4314-bb4d-e0ee65979a1d",
+      "image": "images/f212d2fe-dc35-4314-bb4d-e0ee65979a1d.png",
       "name": "Brinco urso lilás",
-      "description": "",
-      "price": "10",
-      "category": "Brincos divertidos",
-      "image": "images/f212d2fe-dc35-4314-bb4d-e0ee65979a1d.png"
+      "price": "10"
     },
     {
+      "category": "Brincos divertidos",
+      "description": "",
       "id": "c059c129-b84a-4e3e-99a0-19313f64871d",
+      "image": "images/c059c129-b84a-4e3e-99a0-19313f64871d.png",
       "name": "Brinco smile",
-      "description": "",
-      "price": "10",
-      "category": "Brincos divertidos",
-      "image": "images/c059c129-b84a-4e3e-99a0-19313f64871d.png"
+      "price": "10"
     },
     {
+      "category": "Brincos divertidos",
+      "description": "",
       "id": "0ea71e9c-5b3a-4265-ba04-9df8e47f9434",
+      "image": "images/0ea71e9c-5b3a-4265-ba04-9df8e47f9434.png",
       "name": "Brinco guaraná",
-      "description": "",
-      "price": "10",
-      "category": "Brincos divertidos",
-      "image": "images/0ea71e9c-5b3a-4265-ba04-9df8e47f9434.png"
+      "price": "10"
     },
     {
+      "category": "Brincos divertidos",
+      "description": "",
       "id": "552e920b-3e44-465e-a491-f0e248636000",
+      "image": "images/552e920b-3e44-465e-a491-f0e248636000.png",
       "name": "Brinco sukita",
-      "description": "",
-      "price": "10",
-      "category": "Brincos divertidos",
-      "image": "images/552e920b-3e44-465e-a491-f0e248636000.png"
+      "price": "10"
     },
     {
+      "category": "Brincos divertidos",
+      "description": "",
       "id": "e92742b4-a1f2-4016-815f-c7b916a23927",
+      "image": "images/e92742b4-a1f2-4016-815f-c7b916a23927.png",
       "name": "Brinco coca",
-      "description": "",
-      "price": "10",
-      "category": "Brincos divertidos",
-      "image": "images/e92742b4-a1f2-4016-815f-c7b916a23927.png"
+      "price": "10"
     },
     {
+      "category": "Brincos divertidos",
+      "description": "",
       "id": "428b90cb-e6a3-43ef-8e11-8bf112ed5ec8",
+      "image": "images/428b90cb-e6a3-43ef-8e11-8bf112ed5ec8.png",
       "name": "Brinco sapo",
-      "description": "",
-      "price": "10",
-      "category": "Brincos divertidos",
-      "image": "images/428b90cb-e6a3-43ef-8e11-8bf112ed5ec8.png"
-    },
-    {
-      "id": "cded5622-4510-41db-83c0-9ae7a43e428a",
-      "name": "Brinco Minnie",
-      "description": "",
-      "price": "10",
-      "category": "Brincos divertidos",
-      "image": "images/cded5622-4510-41db-83c0-9ae7a43e428a.png"
+      "price": "10"
     }
   ]
 }

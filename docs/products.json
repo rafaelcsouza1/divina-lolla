@@ -83,6 +83,14 @@
       "price": "10",
       "category": "Brincos divertidos",
       "image": "images/428b90cb-e6a3-43ef-8e11-8bf112ed5ec8.png"
+    },
+    {
+      "id": "cded5622-4510-41db-83c0-9ae7a43e428a",
+      "name": "Brinco Minnie",
+      "description": "",
+      "price": "10",
+      "category": "Brincos divertidos",
+      "image": "images/cded5622-4510-41db-83c0-9ae7a43e428a.png"
     }
   ]
 }

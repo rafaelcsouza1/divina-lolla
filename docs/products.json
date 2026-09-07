@@ -11,5 +11,14 @@
   "categories": [
     "Brincos divertidos"
   ],
-  "products": []
+  "products": [
+    {
+      "id": "a42fdd50-c0e7-4959-85cc-c0c93aafa589",
+      "name": "Brinco urso verde",
+      "description": "",
+      "price": "10",
+      "category": "Brincos divertidos",
+      "image": "images/a42fdd50-c0e7-4959-85cc-c0c93aafa589.png"
+    }
+  ]
 }

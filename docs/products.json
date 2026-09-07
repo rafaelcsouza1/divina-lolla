@@ -67,6 +67,14 @@
       "price": "10",
       "category": "Brincos divertidos",
       "image": "images/552e920b-3e44-465e-a491-f0e248636000.png"
+    },
+    {
+      "id": "e92742b4-a1f2-4016-815f-c7b916a23927",
+      "name": "Brinco coca",
+      "description": "",
+      "price": "10",
+      "category": "Brincos divertidos",
+      "image": "images/e92742b4-a1f2-4016-815f-c7b916a23927.png"
     }
   ]
 }

@@ -19,6 +19,14 @@
       "price": "10",
       "category": "Brincos divertidos",
       "image": "images/a42fdd50-c0e7-4959-85cc-c0c93aafa589.png"
+    },
+    {
+      "id": "7a16f953-3726-4c46-a2d3-0fa0cb290bc7",
+      "name": "Brinco gato roxo",
+      "description": "",
+      "price": "10",
+      "category": "Brincos divertidos",
+      "image": "images/7a16f953-3726-4c46-a2d3-0fa0cb290bc7.png"
     }
   ]
 }

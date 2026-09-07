@@ -35,6 +35,14 @@
       "price": "10",
       "category": "Brincos divertidos",
       "image": "images/552e987d-b6d5-4f26-aee2-fddbe7e0f1c5.png"
+    },
+    {
+      "id": "f212d2fe-dc35-4314-bb4d-e0ee65979a1d",
+      "name": "Brinco urso lilás",
+      "description": "",
+      "price": "10",
+      "category": "Brincos divertidos",
+      "image": "images/f212d2fe-dc35-4314-bb4d-e0ee65979a1d.png"
     }
   ]
 }

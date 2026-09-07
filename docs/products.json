@@ -10,8 +10,7 @@
   },
   "categories": [
     "Brincos",
-    "ROlas",
-    "Testes"
+    "ROlas"
   ],
   "products": [
     {
@@ -28,14 +27,6 @@
       "description": "",
       "price": "10",
       "category": "ROlas",
-      "image": ""
-    },
-    {
-      "id": "6c2b4752-0317-4afc-9f94-11a70e1b840f",
-      "name": "TESTE SERVIDOR",
-      "description": "verificacao",
-      "price": "1",
-      "category": "Testes",
       "image": ""
     }
   ]

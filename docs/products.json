@@ -11,7 +11,8 @@
   "categories": [
     "Acessórios de cabelo",
     "Amuletos",
-    "Brincos divertidos"
+    "Brincos divertidos",
+    "Pulseiras de aço inox"
   ],
   "products": [
     {
@@ -111,20 +112,20 @@
       "price": "10"
     },
     {
-      "id": "88efd832-b140-4087-be35-4439da3dcee5",
-      "name": "Amuleto prosperidade",
-      "description": "4,5cm altura",
-      "price": "18",
       "category": "Amuletos",
-      "image": "images/88efd832-b140-4087-be35-4439da3dcee5.png"
+      "description": "4,5cm altura",
+      "id": "88efd832-b140-4087-be35-4439da3dcee5",
+      "image": "images/88efd832-b140-4087-be35-4439da3dcee5.png",
+      "name": "Amuleto prosperidade",
+      "price": "18"
     },
     {
-      "id": "cdecbeb8-3511-4015-9765-1621c5749385",
-      "name": "Amuleto de proteção e boas energias",
-      "description": "4,5cm altura",
-      "price": "18",
       "category": "Amuletos",
-      "image": "images/cdecbeb8-3511-4015-9765-1621c5749385.png"
+      "description": "4,5cm altura",
+      "id": "cdecbeb8-3511-4015-9765-1621c5749385",
+      "image": "images/cdecbeb8-3511-4015-9765-1621c5749385.png",
+      "name": "Amuleto de proteção e boas energias",
+      "price": "18"
     }
   ]
 }

@@ -10,7 +10,8 @@
   },
   "categories": [
     "Brincos divertidos",
-    "Acessórios de cabelo"
+    "Acessórios de cabelo",
+    "Amuletos"
   ],
   "products": [
     {
@@ -86,28 +87,28 @@
       "price": "10"
     },
     {
-      "id": "f6db0f00-e023-4379-a5a3-77c382684b92",
-      "name": "Presilha urso",
+      "category": "Acessórios de cabelo",
       "description": "Kit",
-      "price": "10",
-      "category": "Acessórios de cabelo",
-      "image": "images/f6db0f00-e023-4379-a5a3-77c382684b92.png"
+      "id": "f6db0f00-e023-4379-a5a3-77c382684b92",
+      "image": "images/f6db0f00-e023-4379-a5a3-77c382684b92.png",
+      "name": "Presilha urso",
+      "price": "10"
     },
     {
+      "category": "Acessórios de cabelo",
+      "description": "",
       "id": "f93bdfaa-1b15-44aa-9298-94438e971524",
+      "image": "images/f93bdfaa-1b15-44aa-9298-94438e971524.png",
       "name": "Presilha coelhinho cherry",
-      "description": "",
-      "price": "10",
-      "category": "Acessórios de cabelo",
-      "image": "images/f93bdfaa-1b15-44aa-9298-94438e971524.png"
+      "price": "10"
     },
     {
-      "id": "4e8ad137-7518-43f4-b62f-0b45d6e35695",
-      "name": "Mini piranha cereja",
-      "description": "",
-      "price": "10",
       "category": "Acessórios de cabelo",
-      "image": "images/4e8ad137-7518-43f4-b62f-0b45d6e35695.png"
+      "description": "",
+      "id": "4e8ad137-7518-43f4-b62f-0b45d6e35695",
+      "image": "images/4e8ad137-7518-43f4-b62f-0b45d6e35695.png",
+      "name": "Mini piranha cereja",
+      "price": "10"
     }
   ]
 }

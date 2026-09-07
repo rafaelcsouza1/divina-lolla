@@ -134,6 +134,14 @@
       "price": "20",
       "category": "Pulseiras de aço inox",
       "image": "images/679e58ea-f8ad-42e1-9482-4414b7f43fc7.png"
+    },
+    {
+      "id": "61fb8b03-240d-4f8d-9de8-03facb58a5ca",
+      "name": "Pulseira coração",
+      "description": "",
+      "price": "20",
+      "category": "Pulseiras de aço inox",
+      "image": "images/61fb8b03-240d-4f8d-9de8-03facb58a5ca.png"
     }
   ]
 }

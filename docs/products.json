@@ -166,6 +166,14 @@
       "price": "",
       "category": "",
       "image": ""
+    },
+    {
+      "id": "a675fce8-d02a-43b3-bfaa-99a0550caf60",
+      "name": "Pulseira estrela",
+      "description": "",
+      "price": "20",
+      "category": "Pulseiras de aço inox",
+      "image": "images/a675fce8-d02a-43b3-bfaa-99a0550caf60.png"
     }
   ]
 }

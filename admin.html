@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Divina Lolla — Admin</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #c9a96e;
+      --primary-dark: #a07840;
+      --primary-light: #f5ede0;
+      --danger: #e05252;
+      --danger-light: #fdf0f0;
+      --success: #4caf7d;
+      --success-light: #edf7f1;
+      --bg: #f4f2ef;
+      --surface: #ffffff;
+      --text: #2c2c2c;
+      --text-muted: #888;
+      --border: #e0dbd3;
+      --radius: 10px;
+    }
+
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ── Setup screen ── */
+    #setup-screen {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 24px;
+    }
+    .setup-card {
+      background: var(--surface); border-radius: 16px; padding: 40px;
+      max-width: 480px; width: 100%; box-shadow: 0 4px 32px rgba(0,0,0,0.1);
+    }
+    .setup-card .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 4px; }
+    .setup-card .sub { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 28px; }
+    .setup-card h2 { font-size: 1.1rem; margin-bottom: 20px; }
+
+    /* ── Main layout ── */
+    #app { display: none; }
+    .layout { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 240px; background: var(--surface); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; position: fixed; height: 100vh; overflow-y: auto;
+    }
+    .sidebar-logo { padding: 24px 20px 18px; border-bottom: 1px solid var(--border); }
+    .sidebar-logo .name { font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); }
+    .sidebar-logo .badge { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+    .nav { flex: 1; padding: 14px 10px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+      border-radius: 8px; cursor: pointer; font-size: 0.9rem; color: var(--text-muted);
+      transition: all 0.15s; margin-bottom: 2px; user-select: none;
+    }
+    .nav-item:hover { background: var(--bg); color: var(--text); }
+    .nav-item.active { background: var(--primary-light); color: var(--primary-dark); font-weight: 600; }
+    .nav-item .icon { font-size: 1.05rem; width: 20px; text-align: center; }
+    .sidebar-footer { padding: 14px; border-top: 1px solid var(--border); }
+    .btn-publish {
+      width: 100%; padding: 11px; background: var(--primary); color: #fff;
+      border: none; border-radius: var(--radius); font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      gap: 8px; transition: background 0.2s;
+    }
+    .btn-publish:hover { background: var(--primary-dark); }
+    .btn-publish:disabled { opacity: 0.55; cursor: not-allowed; }
+    .changes-dot { width: 8px; height: 8px; background: #ff6b35; border-radius: 50%; display: none; }
+    .changes-dot.visible { display: block; }
+
+    .main { margin-left: 240px; flex: 1; }
+    .topbar {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 16px 28px; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .topbar h1 { font-size: 1.1rem; font-weight: 600; }
+    .content { padding: 28px; }
+
+    /* ── Buttons ── */
+    .btn {
+      padding: 9px 18px; border-radius: 8px; border: none; cursor: pointer;
+      font-size: 0.88rem; font-weight: 600; transition: all 0.15s; font-family: inherit;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--border); }
+    .btn-danger { background: var(--danger-light); color: var(--danger); }
+    .btn-danger:hover { background: var(--danger); color: #fff; }
+    .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    /* ── Pages ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── Products ── */
+    .products-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 12px; }
+    .search-wrap {
+      display: flex; align-items: center; gap: 8px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; flex: 1; max-width: 300px;
+    }
+    .search-wrap input { border: none; background: transparent; outline: none; font-size: 0.88rem; width: 100%; font-family: inherit; }
+
+    .products-table { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      text-align: left; padding: 11px 14px; font-size: 0.75rem; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--text-muted); border-bottom: 1px solid var(--border); background: var(--bg);
+    }
+    td { padding: 11px 14px; border-bottom: 1px solid var(--border); font-size: 0.9rem; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #faf9f7; }
+
+    .product-thumb { width: 42px; height: 42px; border-radius: 6px; object-fit: cover; }
+    .product-thumb-placeholder {
+      width: 42px; height: 42px; border-radius: 6px; background: var(--primary-light);
+      display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+    }
+    .price-badge { font-weight: 600; color: var(--primary-dark); }
+    .category-badge {
+      background: var(--primary-light); color: var(--primary-dark);
+      padding: 3px 10px; border-radius: 30px; font-size: 0.78rem; white-space: nowrap;
+    }
+    .actions { display: flex; gap: 6px; }
+    .empty-table { text-align: center; padding: 56px 20px; color: var(--text-muted); }
+    .empty-table .icon { font-size: 2.5rem; margin-bottom: 10px; }
+
+    /* ── Form groups ── */
+    .form-group { margin-bottom: 16px; }
+    .form-group label {
+      display: block; font-size: 0.78rem; font-weight: 600; margin-bottom: 6px;
+      color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+      border-radius: 8px; font-size: 0.92rem; font-family: inherit; outline: none;
+      transition: border 0.15s; background: var(--surface); color: var(--text);
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus { border-color: var(--primary); }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── Image upload ── */
+    .image-upload-area {
+      border: 2px dashed var(--border); border-radius: 8px; padding: 20px;
+      text-align: center; cursor: pointer; transition: border-color 0.15s;
+    }
+    .image-upload-area:hover { border-color: var(--primary); }
+    .image-upload-area input { display: none; }
+    .upload-preview { max-width: 100%; max-height: 160px; border-radius: 6px; margin-bottom: 8px; display: none; }
+    .upload-placeholder { color: var(--text-muted); font-size: 0.85rem; }
+    .upload-placeholder .icon { font-size: 1.8rem; margin-bottom: 6px; }
+
+    /* ── Modals ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+      z-index: 300; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--surface); border-radius: var(--radius); width: 100%;
+      max-width: 520px; max-height: 92vh; overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    .modal-header { padding: 20px 24px 0; display: flex; justify-content: space-between; align-items: center; }
+    .modal-header h2 { font-size: 1.05rem; }
+    .modal-close-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); padding: 4px; }
+    .modal-close-btn:hover { color: var(--text); }
+    .modal-body { padding: 20px 24px; }
+    .modal-footer { padding: 0 24px 24px; display: flex; justify-content: flex-end; gap: 10px; }
+    .modal.wide { max-width: 420px; }
+
+    .status-msg { font-size: 0.88rem; margin-top: 10px; padding: 10px 14px; border-radius: 8px; display: none; line-height: 1.5; }
+    .status-msg.success { background: var(--success-light); color: #2e7d52; display: block; }
+    .status-msg.error { background: var(--danger-light); color: var(--danger); display: block; }
+    .status-msg.info { background: #e8f0fe; color: #1a56a0; display: block; }
+
+    /* ── Categories ── */
+    .add-row { display: flex; gap: 10px; margin-bottom: 18px; max-width: 440px; }
+    .add-row input {
+      flex: 1; padding: 9px 12px; border: 1px solid var(--border);
+      border-radius: 8px; font-size: 0.9rem; outline: none; font-family: inherit;
+    }
+    .add-row input:focus { border-color: var(--primary); }
+    .list-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; max-width: 440px; }
+    .list-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    .list-row:last-child { border-bottom: none; }
+    .list-row-name { font-size: 0.92rem; }
+    .list-row-sub { font-size: 0.78rem; color: var(--text-muted); }
+
+    /* ── Settings ── */
+    .settings-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; max-width: 520px; }
+    .settings-card h2 { font-size: 1rem; margin-bottom: 20px; }
+    .settings-divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .logout-row { display: flex; align-items: center; justify-content: space-between; }
+    .logout-row span { font-size: 0.88rem; color: var(--text-muted); }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; padding: 11px 18px;
+      border-radius: 8px; font-size: 0.88rem; z-index: 999;
+      opacity: 0; transform: translateY(8px); transition: all 0.2s; pointer-events: none;
+      background: #222; color: #fff; max-width: 320px;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+
+    /* ── Loading overlay ── */
+    .loading-bar {
+      position: fixed; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--primary); z-index: 500; transform: scaleX(0);
+      transform-origin: left; transition: transform 0.3s; display: none;
+    }
+    .loading-bar.active { display: block; transform: scaleX(0.7); }
+    .loading-bar.done { transform: scaleX(1); opacity: 0; transition: transform 0.1s, opacity 0.3s 0.1s; }
+  </style>
+</head>
+<body>
+
+<div class="loading-bar" id="loading-bar"></div>
+
+<!-- Setup / Login -->
+<div id="setup-screen">
+  <div class="setup-card">
+    <div class="logo">Divina Lolla</div>
+    <div class="sub">Painel de administração</div>
+    <h2>Conectar ao GitHub</h2>
+
+    <div class="form-group">
+      <label>Usuário do GitHub</label>
+      <input type="text" id="setup-owner" placeholder="ex: joaosilva">
+    </div>
+    <div class="form-group">
+      <label>Nome do repositório</label>
+      <input type="text" id="setup-repo" placeholder="ex: divina-lolla">
+    </div>
+    <div class="form-group">
+      <label>Token de acesso pessoal</label>
+      <input type="password" id="setup-token" placeholder="ghp_...">
+      <div class="form-hint">
+        Crie em: GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)<br>
+        Permissões necessárias: <strong>repo</strong>
+      </div>
+    </div>
+
+    <div class="status-msg" id="setup-status"></div>
+
+    <br>
+    <button class="btn btn-primary" id="btn-connect" style="width:100%">Conectar</button>
+  </div>
+</div>
+
+<!-- Main App -->
+<div id="app">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="name" id="sidebar-store-name">Divina Lolla</div>
+        <div class="badge">Painel Admin</div>
+      </div>
+      <nav class="nav">
+        <div class="nav-item active" data-page="products"><span class="icon">🛍</span> Produtos</div>
+        <div class="nav-item" data-page="categories"><span class="icon">🏷</span> Categorias</div>
+        <div class="nav-item" data-page="settings"><span class="icon">⚙</span> Configurações</div>
+        <div class="nav-item" id="nav-view-site"><span class="icon">👁</span> Ver site</div>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="btn-publish" id="btn-publish">
+          <span class="changes-dot" id="changes-dot"></span>
+          ↑ Publicar no site
+        </button>
+      </div>
+    </aside>
+
+    <div class="main">
+      <div class="topbar">
+        <h1 id="page-title">Produtos</h1>
+        <div id="topbar-right"></div>
+      </div>
+      <div class="content">
+
+        <!-- Products -->
+        <div class="page active" id="page-products">
+          <div class="products-header">
+            <div class="search-wrap">
+              <span>🔍</span>
+              <input type="text" id="product-search" placeholder="Buscar produtos...">
+            </div>
+            <button class="btn btn-primary" id="btn-add-product">+ Novo produto</button>
+          </div>
+          <div class="products-table">
+            <table>
+              <thead><tr>
+                <th style="width:54px">Foto</th>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Preço</th>
+                <th style="width:130px">Ações</th>
+              </tr></thead>
+              <tbody id="products-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="page" id="page-categories">
+          <div class="add-row">
+            <input type="text" id="new-cat-input" placeholder="Nome da nova categoria...">
+            <button class="btn btn-primary" id="btn-add-cat">Adicionar</button>
+          </div>
+          <div class="list-card" id="categories-list"></div>
+        </div>
+
+        <!-- Settings -->
+        <div class="page" id="page-settings">
+          <div class="settings-card">
+            <h2>Informações da Loja</h2>
+            <div class="form-group">
+              <label>Nome da loja</label>
+              <input type="text" id="store-name-input" placeholder="Ex: Divina Lolla">
+            </div>
+            <div class="form-group">
+              <label>Descrição</label>
+              <input type="text" id="store-desc-input" placeholder="Ex: Moda feminina exclusiva">
+            </div>
+            <button class="btn btn-primary" id="btn-save-store">Salvar</button>
+
+            <hr class="settings-divider">
+
+            <div class="logout-row">
+              <span>Conectado ao GitHub</span>
+              <button class="btn btn-danger btn-sm" id="btn-logout">Desconectar</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Product Modal -->
+<div class="modal-overlay" id="product-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="product-modal-title">Novo Produto</h2>
+      <button class="modal-close-btn" data-close="product-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="field-id">
+      <div class="form-group">
+        <label>Nome *</label>
+        <input type="text" id="field-name" placeholder="Nome do produto">
+      </div>
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea id="field-desc" placeholder="Descrição do produto..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Preço (R$)</label>
+        <input type="number" id="field-price" placeholder="0.00" step="0.01" min="0">
+      </div>
+      <div class="form-group">
+        <label>Categoria</label>
+        <select id="field-cat"></select>
+      </div>
+      <div class="form-group">
+        <label>Foto</label>
+        <div class="image-upload-area" onclick="document.getElementById('field-image').click()">
+          <input type="file" id="field-image" accept="image/jpeg,image/png,image/webp,image/gif">
+          <img class="upload-preview" id="upload-preview">
+          <div class="upload-placeholder" id="upload-placeholder">
+            <div class="icon">📷</div>
+            <div>Clique para selecionar uma imagem</div>
+            <div style="font-size:0.75rem;margin-top:3px;color:#bbb">JPG, PNG, WEBP</div>
+          </div>
+        </div>
+      </div>
+      <div class="status-msg" id="product-status"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-close="product-modal">Cancelar</button>
+      <button class="btn btn-primary" id="btn-save-product">Salvar produto</button>
+    </div>
+  </div>
+</div>
+
+<!-- Publish Modal -->
+<div class="modal-overlay" id="publish-modal">
+  <div class="modal wide">
+    <div class="modal-header">
+      <h2>Publicar no site</h2>
+      <button class="modal-close-btn" data-close="publish-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Mensagem (opcional)</label>
+        <input type="text" id="commit-msg" placeholder="Ex: Novos produtos adicionados" value="Atualizar catálogo">
+      </div>
+      <div class="status-msg" id="publish-status"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-close="publish-modal">Cancelar</button>
+      <button class="btn btn-primary" id="btn-confirm-publish">↑ Publicar agora</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── Config ──────────────────────────────────────────────────
+const STORAGE_KEY = 'divinalolla_cfg';
+const PRODUCTS_PATH = 'site/products.json';
+const IMAGES_PATH = 'site/images';
+
+let cfg = {};
+let storeData = { store: { name: 'Divina Lolla', description: '' }, categories: [], products: [] };
+let pendingChanges = false;
+let currentImageFile = null;
+let currentImageDataUrl = null;
+
+function saveCfg() { localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg)); }
+function loadCfg() {
+  try { cfg = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { cfg = {}; }
+}
+
+// ─── GitHub API ───────────────────────────────────────────────
+async function ghFetch(path, options = {}) {
+  const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}${path}`;
+  const res = await fetch(url, {
+    ...options,
+    headers: {
+      'Authorization': `token ${cfg.token}`,
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+      ...(options.headers || {})
+    }
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || `GitHub API error ${res.status}`);
+  }
+  return res.status === 204 ? null : res.json();
+}
+
+async function ghGetFile(path) {
+  try {
+    const data = await ghFetch(`/contents/${path}`);
+    return { content: atob(data.content.replace(/\n/g, '')), sha: data.sha };
+  } catch (e) {
+    if (e.message.includes('404') || e.message.includes('Not Found')) return null;
+    throw e;
+  }
+}
+
+async function ghPutFile(path, content, message, sha = null) {
+  const body = {
+    message,
+    content: btoa(unescape(encodeURIComponent(content))),
+  };
+  if (sha) body.sha = sha;
+  return ghFetch(`/contents/${path}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+}
+
+async function ghPutBinary(path, base64Content, message, sha = null) {
+  const body = { message, content: base64Content };
+  if (sha) body.sha = sha;
+  return ghFetch(`/contents/${path}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+}
+
+async function ghDeleteFile(path, message, sha) {
+  return ghFetch(`/contents/${path}`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message, sha })
+  });
+}
+
+async function ghGetFileSha(path) {
+  try {
+    const data = await ghFetch(`/contents/${path}`);
+    return data.sha;
+  } catch { return null; }
+}
+
+// ─── Setup ────────────────────────────────────────────────────
+document.getElementById('btn-connect').onclick = async () => {
+  const owner = document.getElementById('setup-owner').value.trim();
+  const repo = document.getElementById('setup-repo').value.trim();
+  const token = document.getElementById('setup-token').value.trim();
+  const statusEl = document.getElementById('setup-status');
+
+  if (!owner || !repo || !token) {
+    statusEl.className = 'status-msg error';
+    statusEl.textContent = 'Preencha todos os campos.';
+    return;
+  }
+
+  const btn = document.getElementById('btn-connect');
+  btn.disabled = true;
+  btn.textContent = 'Conectando...';
+  statusEl.className = 'status-msg info';
+  statusEl.textContent = 'Verificando credenciais...';
+
+  try {
+    cfg = { owner, repo, token };
+    await ghFetch(''); // test auth
+    saveCfg();
+    await initApp();
+  } catch (e) {
+    statusEl.className = 'status-msg error';
+    statusEl.textContent = 'Erro: ' + e.message + '. Verifique o usuário, repositório e token.';
+    btn.disabled = false;
+    btn.textContent = 'Conectar';
+  }
+};
+
+['setup-owner', 'setup-repo', 'setup-token'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('btn-connect').click();
+  });
+});
+
+// ─── Init ─────────────────────────────────────────────────────
+async function initApp() {
+  showLoading();
+  try {
+    const file = await ghGetFile(PRODUCTS_PATH);
+    if (file) {
+      storeData = JSON.parse(file.content);
+      storeData._sha = file.sha;
+    }
+  } catch (e) {
+    console.warn('products.json não encontrado, usando padrão.', e);
+  }
+  hideLoading();
+
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+
+  updateSidebarName();
+  renderProductsTable();
+  pendingChanges = false;
+  updateChangesDot();
+}
+
+async function loadApp() {
+  loadCfg();
+  if (cfg.owner && cfg.repo && cfg.token) {
+    try {
+      await initApp();
+    } catch {
+      document.getElementById('setup-screen').style.display = 'flex';
+    }
+  }
+}
+
+// ─── Navigation ───────────────────────────────────────────────
+document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+  item.addEventListener('click', () => {
+    const page = item.dataset.page;
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    item.classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.getElementById('page-title').textContent = item.textContent.trim().replace(/^\S+\s*/, '').trim();
+    if (page === 'categories') renderCategories();
+    if (page === 'settings') loadSettings();
+  });
+});
+
+document.getElementById('nav-view-site').onclick = () => {
+  const url = `https://${cfg.owner}.github.io/${cfg.repo}`;
+  window.open(url, '_blank');
+};
+
+// ─── Products ─────────────────────────────────────────────────
+function renderProductsTable(filter = '') {
+  const tbody = document.getElementById('products-tbody');
+  const list = (storeData.products || []).filter(p =>
+    !filter || p.name.toLowerCase().includes(filter) ||
+    (p.description || '').toLowerCase().includes(filter)
+  );
+
+  if (list.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-table">
+      <div class="icon">🛍</div>
+      <div>${filter ? 'Nenhum produto encontrado.' : 'Nenhum produto ainda. Clique em "+ Novo produto" para começar.'}</div>
+    </div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = list.map(p => `
+    <tr>
+      <td>${p.image
+        ? `<img class="product-thumb" src="https://raw.githubusercontent.com/${cfg.owner}/${cfg.repo}/main/site/${p.image.replace('images/','images/')}" onerror="this.style.display='none'">`
+        : `<div class="product-thumb-placeholder">📷</div>`}
+      </td>
+      <td><strong>${esc(p.name)}</strong></td>
+      <td>${p.category ? `<span class="category-badge">${esc(p.category)}</span>` : '<span style="color:#ccc">—</span>'}</td>
+      <td>${p.price ? `<span class="price-badge">R$ ${parseFloat(p.price).toFixed(2).replace('.',',')}</span>` : '<span style="color:#ccc">—</span>'}</td>
+      <td><div class="actions">
+        <button class="btn btn-secondary btn-sm" onclick="openEditProduct('${p.id}')">Editar</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">🗑</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+document.getElementById('product-search').addEventListener('input', e =>
+  renderProductsTable(e.target.value.toLowerCase().trim())
+);
+
+document.getElementById('btn-add-product').onclick = () => openProductModal();
+
+function openProductModal(product = null) {
+  document.getElementById('product-modal-title').textContent = product ? 'Editar Produto' : 'Novo Produto';
+  document.getElementById('field-id').value = product?.id || '';
+  document.getElementById('field-name').value = product?.name || '';
+  document.getElementById('field-desc').value = product?.description || '';
+  document.getElementById('field-price').value = product?.price || '';
+
+  const sel = document.getElementById('field-cat');
+  sel.innerHTML = '<option value="">Sem categoria</option>' +
+    (storeData.categories || []).map(c =>
+      `<option value="${c}" ${product?.category === c ? 'selected' : ''}>${c}</option>`
+    ).join('');
+
+  const preview = document.getElementById('upload-preview');
+  const placeholder = document.getElementById('upload-placeholder');
+  if (product?.image) {
+    preview.src = `https://raw.githubusercontent.com/${cfg.owner}/${cfg.repo}/main/site/${product.image}`;
+    preview.style.display = 'block';
+    placeholder.style.display = 'none';
+  } else {
+    preview.style.display = 'none';
+    placeholder.style.display = 'block';
+  }
+
+  document.getElementById('field-image').value = '';
+  document.getElementById('product-status').className = 'status-msg';
+  currentImageFile = null;
+  currentImageDataUrl = null;
+
+  document.getElementById('product-modal').classList.add('open');
+  setTimeout(() => document.getElementById('field-name').focus(), 80);
+}
+
+function openEditProduct(id) {
+  const p = storeData.products.find(p => p.id === id);
+  if (p) openProductModal(p);
+}
+
+document.getElementById('field-image').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  currentImageFile = file;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    currentImageDataUrl = ev.target.result;
+    const preview = document.getElementById('upload-preview');
+    preview.src = ev.target.result;
+    preview.style.display = 'block';
+    document.getElementById('upload-placeholder').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('btn-save-product').onclick = async () => {
+  const name = document.getElementById('field-name').value.trim();
+  if (!name) { showToast('Informe o nome do produto.', 'error'); return; }
+
+  const btn = document.getElementById('btn-save-product');
+  const statusEl = document.getElementById('product-status');
+  btn.disabled = true;
+  btn.textContent = 'Salvando...';
+  statusEl.className = 'status-msg info';
+  statusEl.textContent = 'Salvando produto...';
+
+  try {
+    const editId = document.getElementById('field-id').value;
+    let product = editId
+      ? storeData.products.find(p => p.id === editId)
+      : { id: generateId(), image: '' };
+
+    if (!editId) storeData.products.push(product);
+
+    product.name = name;
+    product.description = document.getElementById('field-desc').value.trim();
+    product.price = document.getElementById('field-price').value.trim();
+    product.category = document.getElementById('field-cat').value;
+
+    if (currentImageFile && currentImageDataUrl) {
+      statusEl.textContent = 'Enviando imagem...';
+      const ext = currentImageFile.name.split('.').pop().toLowerCase();
+      const imgPath = `${IMAGES_PATH}/${product.id}.${ext}`;
+      const base64 = currentImageDataUrl.split(',')[1];
+      const existingSha = await ghGetFileSha(imgPath);
+      await ghPutBinary(imgPath, base64, `Imagem: ${product.name}`, existingSha);
+      product.image = `images/${product.id}.${ext}`;
+    }
+
+    const cat = product.category;
+    if (cat && !storeData.categories.includes(cat)) storeData.categories.push(cat);
+
+    statusEl.textContent = 'Salvando catálogo...';
+    await saveProductsJson(`${editId ? 'Atualizar' : 'Adicionar'} produto: ${product.name}`);
+
+    closeModal('product-modal');
+    renderProductsTable();
+    updateSidebarName();
+    pendingChanges = false;
+    updateChangesDot();
+    showToast(editId ? 'Produto atualizado!' : 'Produto adicionado!', 'success');
+  } catch (e) {
+    statusEl.className = 'status-msg error';
+    statusEl.textContent = 'Erro: ' + e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Salvar produto';
+  }
+};
+
+async function deleteProduct(id) {
+  const p = storeData.products.find(p => p.id === id);
+  if (!p || !confirm(`Excluir "${p.name}"?`)) return;
+
+  showLoading();
+  try {
+    if (p.image) {
+      const imgPath = `site/${p.image}`;
+      const sha = await ghGetFileSha(imgPath);
+      if (sha) await ghDeleteFile(imgPath, `Remover imagem: ${p.name}`, sha);
+    }
+    storeData.products = storeData.products.filter(x => x.id !== id);
+    rebuildCategories();
+    await saveProductsJson(`Remover produto: ${p.name}`);
+    renderProductsTable();
+    showToast('Produto excluído.', 'success');
+  } catch (e) {
+    showToast('Erro ao excluir: ' + e.message, 'error');
+  } finally {
+    hideLoading();
+  }
+}
+
+// ─── Categories ───────────────────────────────────────────────
+function renderCategories() {
+  const list = document.getElementById('categories-list');
+  const cats = storeData.categories || [];
+  if (cats.length === 0) {
+    list.innerHTML = '<div style="padding:20px;text-align:center;color:#bbb;font-size:0.88rem">Nenhuma categoria ainda.</div>';
+    return;
+  }
+  list.innerHTML = cats.map(cat => {
+    const count = (storeData.products || []).filter(p => p.category === cat).length;
+    return `<div class="list-row">
+      <div>
+        <div class="list-row-name">${esc(cat)}</div>
+        <div class="list-row-sub">${count} produto${count !== 1 ? 's' : ''}</div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="deleteCategory('${esc(cat)}')">🗑</button>
+    </div>`;
+  }).join('');
+}
+
+document.getElementById('btn-add-cat').onclick = async () => {
+  const input = document.getElementById('new-cat-input');
+  const name = input.value.trim();
+  if (!name) return;
+  if ((storeData.categories || []).includes(name)) { showToast('Categoria já existe.', 'error'); return; }
+  storeData.categories = [...(storeData.categories || []), name];
+  await saveProductsJson(`Adicionar categoria: ${name}`);
+  input.value = '';
+  renderCategories();
+  showToast('Categoria adicionada!', 'success');
+};
+
+document.getElementById('new-cat-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('btn-add-cat').click();
+});
+
+async function deleteCategory(cat) {
+  const count = (storeData.products || []).filter(p => p.category === cat).length;
+  if (!confirm(`Excluir categoria "${cat}"?${count > 0 ? `\n\n${count} produto(s) ficarão sem categoria.` : ''}`)) return;
+  storeData.categories = (storeData.categories || []).filter(c => c !== cat);
+  storeData.products.forEach(p => { if (p.category === cat) p.category = ''; });
+  await saveProductsJson(`Remover categoria: ${cat}`);
+  renderCategories();
+  showToast('Categoria removida.', 'success');
+}
+
+function rebuildCategories() {
+  storeData.categories = [...new Set((storeData.products || []).map(p => p.category).filter(Boolean))].sort();
+}
+
+// ─── Settings ─────────────────────────────────────────────────
+function loadSettings() {
+  document.getElementById('store-name-input').value = storeData.store?.name || '';
+  document.getElementById('store-desc-input').value = storeData.store?.description || '';
+}
+
+document.getElementById('btn-save-store').onclick = async () => {
+  const btn = document.getElementById('btn-save-store');
+  btn.disabled = true;
+  btn.textContent = 'Salvando...';
+  try {
+    storeData.store = storeData.store || {};
+    storeData.store.name = document.getElementById('store-name-input').value.trim() || 'Divina Lolla';
+    storeData.store.description = document.getElementById('store-desc-input').value.trim();
+    await saveProductsJson('Atualizar configurações da loja');
+    updateSidebarName();
+    showToast('Configurações salvas!', 'success');
+  } catch (e) {
+    showToast('Erro: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Salvar';
+  }
+};
+
+document.getElementById('btn-logout').onclick = () => {
+  if (!confirm('Desconectar do GitHub?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+};
+
+// ─── Publish ──────────────────────────────────────────────────
+document.getElementById('btn-publish').onclick = () => {
+  document.getElementById('publish-status').className = 'status-msg';
+  document.getElementById('publish-modal').classList.add('open');
+};
+
+document.getElementById('btn-confirm-publish').onclick = async () => {
+  const btn = document.getElementById('btn-confirm-publish');
+  const statusEl = document.getElementById('publish-status');
+  btn.disabled = true;
+  btn.textContent = 'Publicando...';
+  statusEl.className = 'status-msg info';
+  statusEl.textContent = 'Enviando para o GitHub...';
+
+  try {
+    const msg = document.getElementById('commit-msg').value.trim() || 'Atualizar catálogo';
+    await saveProductsJson(msg);
+    statusEl.className = 'status-msg success';
+    statusEl.textContent = '✓ Publicado! O site atualiza em 1-2 minutos.';
+    pendingChanges = false;
+    updateChangesDot();
+  } catch (e) {
+    statusEl.className = 'status-msg error';
+    statusEl.textContent = 'Erro: ' + e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '↑ Publicar agora';
+  }
+};
+
+// ─── Helpers ──────────────────────────────────────────────────
+async function saveProductsJson(commitMessage) {
+  const content = JSON.stringify(storeData, null, 2);
+  const result = await ghPutFile(PRODUCTS_PATH, content, commitMessage, storeData._sha || null);
+  if (result?.content) storeData._sha = result.content.sha;
+}
+
+function updateSidebarName() {
+  document.getElementById('sidebar-store-name').textContent = storeData.store?.name || 'Divina Lolla';
+}
+
+function updateChangesDot() {
+  document.getElementById('changes-dot').classList.toggle('visible', pendingChanges);
+}
+
+function generateId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── Modals ───────────────────────────────────────────────────
+document.querySelectorAll('[data-close]').forEach(btn => {
+  btn.addEventListener('click', () => closeModal(btn.dataset.close));
+});
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(overlay.id); });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => closeModal(m.id));
+});
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ─── Loading ──────────────────────────────────────────────────
+function showLoading() {
+  const bar = document.getElementById('loading-bar');
+  bar.classList.remove('done');
+  bar.classList.add('active');
+}
+function hideLoading() {
+  const bar = document.getElementById('loading-bar');
+  bar.classList.add('done');
+  setTimeout(() => bar.classList.remove('active', 'done'), 400);
+}
+
+// ─── Toast ────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type = '') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = 'toast'; }, 3200);
+}
+
+// ─── Boot ─────────────────────────────────────────────────────
+loadApp();
+</script>
+</body>
+</html>

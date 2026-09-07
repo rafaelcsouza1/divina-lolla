@@ -1,0 +1,11 @@
+# Ambiente virtual Python (recriado por iniciar.command / iniciar.bat)
+venv/
+__pycache__/
+*.pyc
+
+# Config do painel admin: pode conter apiToken / remoteToken.
+# O app recria com os valores padrão se o arquivo não existir.
+admin/config.json
+
+# macOS
+.DS_Store

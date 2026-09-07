@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Divina Lolla — Admin</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #c9a96e;
+      --primary-dark: #a07840;
+      --primary-light: #f5ede0;
+      --danger: #e05252;
+      --danger-light: #fdf0f0;
+      --success: #4caf7d;
+      --success-light: #edf7f1;
+      --bg: #f4f2ef;
+      --surface: #ffffff;
+      --text: #2c2c2c;
+      --text-muted: #888;
+      --border: #e0dbd3;
+      --radius: 10px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .layout { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 240px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-logo {
+      padding: 28px 24px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-logo .name { font-size: 1.15rem; font-weight: 700; color: var(--primary-dark); }
+    .sidebar-logo .badge { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+
+    .nav { flex: 1; padding: 16px 12px; }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      transition: all 0.15s;
+      margin-bottom: 2px;
+    }
+
+    .nav-item:hover { background: var(--bg); color: var(--text); }
+    .nav-item.active { background: var(--primary-light); color: var(--primary-dark); font-weight: 600; }
+    .nav-item .icon { font-size: 1.1rem; width: 20px; text-align: center; }
+
+    .sidebar-footer { padding: 16px; border-top: 1px solid var(--border); }
+
+    .btn-publish {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+
+    .btn-publish:hover { background: var(--primary-dark); }
+    .btn-publish:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .changes-dot {
+      width: 8px; height: 8px;
+      background: #ff6b35;
+      border-radius: 50%;
+      display: none;
+    }
+    .changes-dot.visible { display: block; }
+
+    /* Main */
+    .main { margin-left: 240px; flex: 1; }
+
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar h1 { font-size: 1.2rem; font-weight: 600; }
+
+    .btn {
+      padding: 9px 18px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--border); }
+    .btn-danger { background: var(--danger-light); color: var(--danger); }
+    .btn-danger:hover { background: var(--danger); color: #fff; }
+    .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+
+    .content { padding: 32px; }
+
+    /* Pages */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* Products list */
+    .products-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .search-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 14px;
+      min-width: 240px;
+    }
+    .search-wrap input { border: none; background: transparent; outline: none; font-size: 0.88rem; width: 100%; }
+
+    .products-table {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+      vertical-align: middle;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--bg); }
+
+    .product-thumb {
+      width: 44px; height: 44px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: var(--bg);
+    }
+
+    .product-thumb-placeholder {
+      width: 44px; height: 44px;
+      border-radius: 6px;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .price-badge {
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    .category-badge {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 3px 10px;
+      border-radius: 30px;
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+
+    .actions { display: flex; gap: 6px; }
+
+    .empty-table {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+    .empty-table .icon { font-size: 2.5rem; margin-bottom: 12px; }
+
+    /* Form / Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+
+    .modal-header {
+      padding: 20px 24px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h2 { font-size: 1.1rem; }
+    .modal-header button { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--text-muted); }
+    .modal-header button:hover { color: var(--text); }
+
+    .modal-body { padding: 20px 24px 24px; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 6px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-family: inherit;
+      outline: none;
+      transition: border 0.15s;
+      background: var(--surface);
+      color: var(--text);
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus { border-color: var(--primary); }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+
+    .image-upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .image-upload-area:hover { border-color: var(--primary); }
+    .image-upload-area input { display: none; }
+    .image-upload-area .preview {
+      max-width: 100%;
+      max-height: 160px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      display: none;
+    }
+    .image-upload-area .placeholder-text { color: var(--text-muted); font-size: 0.88rem; }
+    .image-upload-area .icon { font-size: 2rem; margin-bottom: 6px; }
+
+    .modal-footer {
+      padding: 0 24px 24px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Publish modal */
+    .publish-modal { max-width: 420px; }
+    .publish-modal .status-msg { font-size: 0.92rem; margin-top: 12px; padding: 12px; border-radius: 8px; display: none; }
+    .publish-modal .status-msg.success { background: var(--success-light); color: var(--success); display: block; }
+    .publish-modal .status-msg.error { background: var(--danger-light); color: var(--danger); display: block; }
+
+    /* Store settings */
+    .settings-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      max-width: 560px;
+    }
+    .settings-card h2 { font-size: 1rem; margin-bottom: 6px; }
+    .settings-card .card-hint { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+    .settings-card + .settings-card { margin-top: 20px; }
+    .field-hint { font-size: 0.76rem; color: var(--text-muted); margin-top: 5px; line-height: 1.45; }
+    .form-row { display: flex; gap: 14px; }
+    .form-row > .form-group { flex: 1; }
+
+    /* Radio / seletor de fonte de dados */
+    .radio-group { display: flex; gap: 12px; margin-bottom: 18px; }
+    .radio-card {
+      flex: 1; border: 1.5px solid var(--border); border-radius: var(--radius);
+      padding: 14px 16px; cursor: pointer; transition: all 0.15s; background: var(--surface);
+    }
+    .radio-card:hover { border-color: var(--primary); }
+    .radio-card.active { border-color: var(--primary); background: var(--primary-light); }
+    .radio-card .rc-title { font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
+    .radio-card .rc-desc { font-size: 0.76rem; color: var(--text-muted); margin-top: 4px; }
+    .conn-status { font-size: 0.85rem; margin-top: 12px; padding: 10px 12px; border-radius: 8px; display: none; }
+    .conn-status.success { background: var(--success-light); color: var(--success); display: block; }
+    .conn-status.error { background: var(--danger-light); color: var(--danger); display: block; }
+    .btn-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .restart-note {
+      font-size: 0.8rem; color: var(--primary-dark); background: var(--primary-light);
+      border-radius: 8px; padding: 10px 12px; margin-top: 14px; display: none;
+    }
+    .restart-note.show { display: block; }
+    .logo-preview { max-height: 56px; border-radius: 8px; margin-top: 8px; display: none; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #222;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+
+    /* Categories page */
+    .categories-list {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      max-width: 480px;
+    }
+    .category-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .category-row:last-child { border-bottom: none; }
+    .category-name { font-size: 0.92rem; }
+    .category-count { font-size: 0.8rem; color: var(--text-muted); }
+
+    .add-category-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      max-width: 480px;
+    }
+    .add-category-row input {
+      flex: 1;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .add-category-row input:focus { border-color: var(--primary); }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="name">Divina Lolla</div>
+      <div class="badge">Painel Admin</div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-item active" data-page="products">
+        <span class="icon">&#128722;</span> Produtos
+      </div>
+      <div class="nav-item" data-page="categories">
+        <span class="icon">&#127991;</span> Categorias
+      </div>
+      <div class="nav-item" data-page="settings">
+        <span class="icon">&#9881;</span> Configurações
+      </div>
+      <div class="nav-item" onclick="window.open('/site/index.html','_blank')">
+        <span class="icon">&#128065;</span> Ver site
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn-publish" id="btn-publish">
+        <span class="changes-dot" id="changes-dot"></span>
+        &#8593; Publicar no site
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <h1 id="page-title">Produtos</h1>
+      <div id="topbar-actions"></div>
+    </div>
+
+    <div class="content">
+
+      <!-- Products page -->
+      <div class="page active" id="page-products">
+        <div class="products-header">
+          <div class="search-wrap">
+            <span>&#128269;</span>
+            <input type="text" id="product-search" placeholder="Buscar produtos...">
+          </div>
+          <button class="btn btn-primary" id="btn-add-product">+ Novo produto</button>
+        </div>
+        <div class="products-table">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:56px">Foto</th>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Preço</th>
+                <th style="width:120px">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="products-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Categories page -->
+      <div class="page" id="page-categories">
+        <div class="add-category-row">
+          <input type="text" id="new-category-input" placeholder="Nome da nova categoria...">
+          <button class="btn btn-primary" id="btn-add-category">Adicionar</button>
+        </div>
+        <div class="categories-list" id="categories-list"></div>
+      </div>
+
+      <!-- Settings page (Configurador) -->
+      <div class="page" id="page-settings">
+
+        <!-- Loja & Contato (WhatsApp) -->
+        <div class="settings-card">
+          <h2>Loja &amp; Contato</h2>
+          <div class="card-hint">Aparece no site público. O WhatsApp é usado pelo botão “Tenho interesse”.</div>
+          <div class="form-group">
+            <label>Nome da loja</label>
+            <input type="text" id="store-name" placeholder="Ex: Minha Loja">
+          </div>
+          <div class="form-group">
+            <label>Descrição</label>
+            <input type="text" id="store-desc" placeholder="Ex: Produtos artesanais e exclusivos">
+          </div>
+          <div class="form-group">
+            <label>Logo (URL opcional)</label>
+            <input type="text" id="store-logo" placeholder="https://... ou images/logo.png">
+            <img class="logo-preview" id="logo-preview" alt="logo">
+          </div>
+          <div class="form-group">
+            <label>WhatsApp (com DDD e país)</label>
+            <input type="text" id="store-whatsapp" placeholder="Ex: 55 11 91234-5678">
+            <div class="field-hint">Só números importam — o país (55) é adicionado se você esquecer. Deixe vazio para esconder o botão de interesse.</div>
+          </div>
+          <div class="form-group">
+            <label>Mensagem do “Tenho interesse”</label>
+            <textarea id="store-msg" placeholder="Olá! Tenho interesse no produto..."></textarea>
+            <div class="field-hint">Use <strong>{nome}</strong> para o nome do produto, <strong>{preco}</strong> para o preço e <strong>{link}</strong> para o link do produto.</div>
+          </div>
+          <button class="btn btn-primary" id="btn-save-store">Salvar loja &amp; contato</button>
+        </div>
+
+        <!-- Fonte de dados (conexão do catálogo) -->
+        <div class="settings-card">
+          <h2>Fonte de dados do catálogo</h2>
+          <div class="card-hint">Onde os produtos ficam guardados. Escolha entre um arquivo local ou um servidor remoto.</div>
+          <div class="radio-group">
+            <div class="radio-card active" id="ds-local" data-mode="local">
+              <div class="rc-title">📁 Arquivo local</div>
+              <div class="rc-desc">Salva neste computador (products.json). Publique no GitHub Pages depois.</div>
+            </div>
+            <div class="radio-card" id="ds-remote" data-mode="remote">
+              <div class="rc-title">🌐 Servidor remoto</div>
+              <div class="rc-desc">Conecta a um catálogo hospedado. Edite de qualquer lugar, sem git.</div>
+            </div>
+          </div>
+
+          <div id="ds-local-fields">
+            <div class="form-group">
+              <label>Caminho do arquivo (opcional)</label>
+              <input type="text" id="ds-local-path" placeholder="Padrão: docs/products.json">
+              <div class="field-hint">Deixe vazio para usar o arquivo padrão do projeto.</div>
+            </div>
+          </div>
+
+          <div id="ds-remote-fields" style="display:none">
+            <div class="form-group">
+              <label>URL do catálogo remoto</label>
+              <input type="text" id="ds-remote-url" placeholder="https://seu-servidor.com/api/catalog">
+            </div>
+            <div class="form-group">
+              <label>Token de acesso (se o servidor exigir)</label>
+              <input type="text" id="ds-remote-token" placeholder="Cole o token do servidor">
+            </div>
+            <div class="btn-row">
+              <button class="btn btn-secondary" id="btn-test-conn">Testar conexão</button>
+            </div>
+            <div class="conn-status" id="conn-status"></div>
+          </div>
+        </div>
+
+        <!-- Servidor do admin -->
+        <div class="settings-card">
+          <h2>Servidor do painel</h2>
+          <div class="card-hint">Como este painel admin roda. Alterações aqui exigem reiniciar o app.</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Host</label>
+              <select id="srv-host">
+                <option value="127.0.0.1">Só este computador (127.0.0.1)</option>
+                <option value="0.0.0.0">Rede / servidor (0.0.0.0)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Porta</label>
+              <input type="number" id="srv-port" placeholder="5000" min="1" max="65535">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>URL pública (quando hospedado)</label>
+            <input type="text" id="srv-public-url" placeholder="Ex: https://admin.minhaloja.com">
+            <div class="field-hint">Informe o endereço público do servidor onde o admin está hospedado. Opcional em uso local.</div>
+          </div>
+          <div class="form-group">
+            <label>Token deste catálogo (para acesso remoto)</label>
+            <input type="text" id="srv-api-token" placeholder="Defina um token para proteger /api/catalog">
+            <div class="field-hint">Se preenchido, outros admins precisam desse token para se conectar a este servidor. Deixe vazio para acesso aberto (uso local).</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="btn-save-config">Salvar configurações</button>
+          </div>
+          <div class="restart-note" id="restart-note">⚠ Host/porta alterados. Reinicie o app (feche e rode de novo) para aplicar.</div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Product Form Modal -->
+<div class="modal-overlay" id="product-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-title">Novo Produto</h2>
+      <button onclick="closeProductModal()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="product-id">
+      <div class="form-group">
+        <label>Nome *</label>
+        <input type="text" id="field-name" placeholder="Nome do produto">
+      </div>
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea id="field-description" placeholder="Descrição do produto..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Preço (R$)</label>
+        <input type="number" id="field-price" placeholder="0,00" step="0.01" min="0">
+      </div>
+      <div class="form-group">
+        <label>Categoria</label>
+        <select id="field-category">
+          <option value="">Sem categoria</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Foto</label>
+        <div class="image-upload-area" id="upload-area" onclick="document.getElementById('field-image').click()">
+          <input type="file" id="field-image" accept="image/*">
+          <img class="preview" id="image-preview">
+          <div class="placeholder-text" id="upload-placeholder">
+            <div class="icon">&#128247;</div>
+            <div>Clique para selecionar uma imagem</div>
+            <div style="font-size:0.78rem;margin-top:4px;color:#aaa">JPG, PNG, WEBP até 16MB</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeProductModal()">Cancelar</button>
+      <button class="btn btn-primary" id="btn-save-product">Salvar produto</button>
+    </div>
+  </div>
+</div>
+
+<!-- Publish Modal -->
+<div class="modal-overlay" id="publish-modal">
+  <div class="modal publish-modal">
+    <div class="modal-header">
+      <h2>Publicar no GitHub Pages</h2>
+      <button onclick="document.getElementById('publish-modal').classList.remove('open')">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Mensagem do commit</label>
+        <input type="text" id="commit-message" placeholder="Ex: Adicionar novos produtos" value="Atualizar catálogo">
+      </div>
+      <div class="status-msg" id="publish-status"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="document.getElementById('publish-modal').classList.remove('open')">Cancelar</button>
+      <button class="btn btn-primary" id="btn-confirm-publish">&#8593; Publicar agora</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+let storeData = { store: {}, categories: [], products: [] };
+let editingId = null;
+
+// ─── Navigation ──────────────────────────────────────────────
+document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+  item.addEventListener('click', () => {
+    const page = item.dataset.page;
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    item.classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.getElementById('page-title').textContent = item.textContent.trim().replace(/^./, '').trim();
+    if (page === 'settings') loadSettings();
+    if (page === 'categories') renderCategories();
+  });
+});
+
+// ─── Load data ────────────────────────────────────────────────
+async function loadData() {
+  const res = await fetch('/api/data');
+  storeData = await res.json();
+  renderProductsTable();
+  checkGitStatus();
+}
+
+// ─── Products ─────────────────────────────────────────────────
+function renderProductsTable(filter = '') {
+  const tbody = document.getElementById('products-tbody');
+  const products = storeData.products.filter(p =>
+    !filter || p.name.toLowerCase().includes(filter) || (p.description || '').toLowerCase().includes(filter)
+  );
+
+  if (products.length === 0) {
+    tbody.innerHTML = `
+      <tr><td colspan="5">
+        <div class="empty-table">
+          <div class="icon">&#128722;</div>
+          <div>${filter ? 'Nenhum produto encontrado.' : 'Nenhum produto ainda. Clique em "+ Novo produto" para começar.'}</div>
+        </div>
+      </td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = products.map(p => `
+    <tr>
+      <td>
+        ${p.image
+          ? `<img class="product-thumb" src="/site/${p.image}" onerror="this.style.display='none'">`
+          : `<div class="product-thumb-placeholder">&#128247;</div>`}
+      </td>
+      <td><strong>${p.name}</strong></td>
+      <td>${p.category ? `<span class="category-badge">${p.category}</span>` : '<span style="color:#ccc">—</span>'}</td>
+      <td>${p.price ? `<span class="price-badge">R$ ${parseFloat(p.price).toFixed(2).replace('.', ',')}</span>` : '<span style="color:#ccc">—</span>'}</td>
+      <td>
+        <div class="actions">
+          <button class="btn btn-secondary btn-sm" onclick="editProduct('${p.id}')">Editar</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">&#128465;</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+document.getElementById('product-search').addEventListener('input', e => {
+  renderProductsTable(e.target.value.toLowerCase().trim());
+});
+
+// ─── Add/Edit Product Modal ────────────────────────────────────
+document.getElementById('btn-add-product').onclick = () => openProductModal();
+
+function openProductModal(product = null) {
+  editingId = product ? product.id : null;
+  document.getElementById('modal-title').textContent = product ? 'Editar Produto' : 'Novo Produto';
+  document.getElementById('product-id').value = product ? product.id : '';
+  document.getElementById('field-name').value = product ? product.name : '';
+  document.getElementById('field-description').value = product ? product.description : '';
+  document.getElementById('field-price').value = product ? product.price : '';
+
+  // Populate category select
+  const sel = document.getElementById('field-category');
+  sel.innerHTML = '<option value="">Sem categoria</option>' +
+    storeData.categories.map(c => `<option value="${c}" ${product && product.category === c ? 'selected' : ''}>${c}</option>`).join('');
+
+  // Image preview
+  const preview = document.getElementById('image-preview');
+  const placeholder = document.getElementById('upload-placeholder');
+  if (product && product.image) {
+    preview.src = '/site/' + product.image;
+    preview.style.display = 'block';
+    placeholder.style.display = 'none';
+  } else {
+    preview.style.display = 'none';
+    placeholder.style.display = 'block';
+  }
+  document.getElementById('field-image').value = '';
+
+  document.getElementById('product-modal').classList.add('open');
+  setTimeout(() => document.getElementById('field-name').focus(), 100);
+}
+
+function closeProductModal() {
+  document.getElementById('product-modal').classList.remove('open');
+}
+
+document.getElementById('field-image').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const preview = document.getElementById('image-preview');
+    preview.src = ev.target.result;
+    preview.style.display = 'block';
+    document.getElementById('upload-placeholder').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('btn-save-product').onclick = async () => {
+  const name = document.getElementById('field-name').value.trim();
+  if (!name) { showToast('Informe o nome do produto.', 'error'); return; }
+
+  const formData = new FormData();
+  formData.append('name', name);
+  formData.append('description', document.getElementById('field-description').value.trim());
+  formData.append('price', document.getElementById('field-price').value.trim());
+  formData.append('category', document.getElementById('field-category').value);
+  const imageFile = document.getElementById('field-image').files[0];
+  if (imageFile) formData.append('image', imageFile);
+
+  const btn = document.getElementById('btn-save-product');
+  btn.disabled = true;
+  btn.textContent = 'Salvando...';
+
+  try {
+    const url = editingId ? `/api/products/${editingId}` : '/api/products';
+    const method = editingId ? 'PUT' : 'POST';
+    const res = await fetch(url, { method, body: formData });
+    const data = await res.json();
+    if (data.ok) {
+      await loadData();
+      closeProductModal();
+      showToast(editingId ? 'Produto atualizado!' : 'Produto adicionado!', 'success');
+    } else {
+      showToast(data.error || 'Erro ao salvar.', 'error');
+    }
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Salvar produto';
+  }
+};
+
+function editProduct(id) {
+  const p = storeData.products.find(p => p.id === id);
+  if (p) openProductModal(p);
+}
+
+async function deleteProduct(id) {
+  const p = storeData.products.find(p => p.id === id);
+  if (!confirm(`Excluir "${p.name}"?`)) return;
+  const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
+  const data = await res.json();
+  if (data.ok) {
+    await loadData();
+    showToast('Produto excluído.', 'success');
+  }
+}
+
+// ─── Categories ────────────────────────────────────────────────
+function renderCategories() {
+  const list = document.getElementById('categories-list');
+  if (storeData.categories.length === 0) {
+    list.innerHTML = '<div style="padding:20px;text-align:center;color:#aaa">Nenhuma categoria ainda.</div>';
+    return;
+  }
+  list.innerHTML = storeData.categories.map(cat => {
+    const count = storeData.products.filter(p => p.category === cat).length;
+    return `
+      <div class="category-row">
+        <div>
+          <div class="category-name">${cat}</div>
+          <div class="category-count">${count} produto${count !== 1 ? 's' : ''}</div>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="deleteCategory('${cat}')">&#128465;</button>
+      </div>`;
+  }).join('');
+}
+
+document.getElementById('btn-add-category').onclick = async () => {
+  const input = document.getElementById('new-category-input');
+  const name = input.value.trim();
+  if (!name) return;
+  if (storeData.categories.includes(name)) {
+    showToast('Categoria já existe.', 'error');
+    return;
+  }
+  storeData.categories.push(name);
+  const data = { ...storeData };
+  // Save via updating store (we just re-save the whole structure via a product trick)
+  // Actually we'll save categories inline
+  await saveCategoriesDirect();
+  input.value = '';
+  renderCategories();
+  showToast('Categoria adicionada!', 'success');
+};
+
+document.getElementById('new-category-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('btn-add-category').click();
+});
+
+async function deleteCategory(cat) {
+  const count = storeData.products.filter(p => p.category === cat).length;
+  if (count > 0 && !confirm(`Esta categoria tem ${count} produto(s). Ao excluí-la, os produtos não terão categoria. Continuar?`)) return;
+  storeData.categories = storeData.categories.filter(c => c !== cat);
+  storeData.products.forEach(p => { if (p.category === cat) p.category = ''; });
+  await saveCategoriesDirect();
+  await loadData();
+  renderCategories();
+  showToast('Categoria removida.', 'success');
+}
+
+async function saveCategoriesDirect() {
+  // Use a lightweight endpoint — update store also saves full data
+  // We'll use a workaround: save via PUT store with current values to trigger full save
+  // For now, add a dedicated endpoint usage:
+  await fetch('/api/store', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name: storeData.store.name,
+      description: storeData.store.description,
+      categories: storeData.categories,
+      products: storeData.products,
+    })
+  });
+}
+
+// ─── Configurador ─────────────────────────────────────────────
+let appConfig = { server: {}, dataSource: {} };
+
+async function loadSettings() {
+  // Loja & contato (vem do catálogo)
+  const store = storeData.store || {};
+  const contact = storeData.contact || {};
+  document.getElementById('store-name').value = store.name || '';
+  document.getElementById('store-desc').value = store.description || '';
+  document.getElementById('store-logo').value = store.logo || '';
+  document.getElementById('store-whatsapp').value = contact.whatsapp || '';
+  document.getElementById('store-msg').value = contact.interestTemplate || '';
+  updateLogoPreview();
+
+  // Config do admin (servidor + fonte de dados)
+  try {
+    const res = await fetch('/api/config');
+    appConfig = await res.json();
+  } catch { appConfig = { server: {}, dataSource: {} }; }
+  const srv = appConfig.server || {};
+  const ds = appConfig.dataSource || {};
+  document.getElementById('srv-host').value = srv.host || '127.0.0.1';
+  document.getElementById('srv-port').value = srv.port || 5000;
+  document.getElementById('srv-public-url').value = srv.publicUrl || '';
+  document.getElementById('srv-api-token').value = srv.apiToken || '';
+  document.getElementById('ds-local-path').value = ds.localPath || '';
+  document.getElementById('ds-remote-url').value = ds.remoteUrl || '';
+  document.getElementById('ds-remote-token').value = ds.remoteToken || '';
+  setDataSourceMode(ds.mode || 'local');
+  document.getElementById('restart-note').classList.remove('show');
+  document.getElementById('conn-status').className = 'conn-status';
+}
+
+function updateLogoPreview() {
+  const url = document.getElementById('store-logo').value.trim();
+  const img = document.getElementById('logo-preview');
+  if (url) { img.src = url; img.style.display = 'block'; }
+  else { img.style.display = 'none'; }
+}
+document.getElementById('store-logo').addEventListener('input', updateLogoPreview);
+
+function setDataSourceMode(mode) {
+  document.getElementById('ds-local').classList.toggle('active', mode === 'local');
+  document.getElementById('ds-remote').classList.toggle('active', mode === 'remote');
+  document.getElementById('ds-local-fields').style.display = mode === 'local' ? 'block' : 'none';
+  document.getElementById('ds-remote-fields').style.display = mode === 'remote' ? 'block' : 'none';
+  appConfig.dataSource = appConfig.dataSource || {};
+  appConfig.dataSource.mode = mode;
+}
+document.getElementById('ds-local').onclick = () => setDataSourceMode('local');
+document.getElementById('ds-remote').onclick = () => setDataSourceMode('remote');
+
+// Salvar loja & contato
+document.getElementById('btn-save-store').onclick = async () => {
+  const payload = {
+    name: document.getElementById('store-name').value.trim(),
+    description: document.getElementById('store-desc').value.trim(),
+    logo: document.getElementById('store-logo').value.trim(),
+    whatsapp: document.getElementById('store-whatsapp').value.trim(),
+    interestTemplate: document.getElementById('store-msg').value,
+  };
+  try {
+    const res = await fetch('/api/store', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.ok) { await loadData(); showToast('Loja e contato salvos!', 'success'); }
+    else { showToast(data.error || 'Erro ao salvar.', 'error'); }
+  } catch (e) { showToast('Erro ao salvar: ' + e.message, 'error'); }
+};
+
+// Salvar config (servidor + fonte de dados)
+document.getElementById('btn-save-config').onclick = async () => {
+  const prevServer = appConfig.server || {};
+  const payload = {
+    server: {
+      host: document.getElementById('srv-host').value,
+      port: parseInt(document.getElementById('srv-port').value, 10) || 5000,
+      publicUrl: document.getElementById('srv-public-url').value.trim(),
+      apiToken: document.getElementById('srv-api-token').value.trim(),
+    },
+    dataSource: {
+      mode: appConfig.dataSource.mode || 'local',
+      localPath: document.getElementById('ds-local-path').value.trim(),
+      remoteUrl: document.getElementById('ds-remote-url').value.trim(),
+      remoteToken: document.getElementById('ds-remote-token').value.trim(),
+    },
+  };
+  try {
+    const res = await fetch('/api/config', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.ok) {
+      const hostPortChanged = prevServer.host !== payload.server.host || String(prevServer.port) !== String(payload.server.port);
+      appConfig = data.config;
+      showToast('Configurações salvas!', 'success');
+      document.getElementById('restart-note').classList.toggle('show', hostPortChanged);
+      await loadData();  // recarrega os dados pela nova fonte
+    } else {
+      showToast(data.error || 'Erro ao salvar.', 'error');
+    }
+  } catch (e) { showToast('Erro ao salvar: ' + e.message, 'error'); }
+};
+
+// Testar conexão remota
+document.getElementById('btn-test-conn').onclick = async () => {
+  const status = document.getElementById('conn-status');
+  const btn = document.getElementById('btn-test-conn');
+  status.className = 'conn-status';
+  btn.disabled = true; btn.textContent = 'Testando...';
+  try {
+    const res = await fetch('/api/test-connection', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        remoteUrl: document.getElementById('ds-remote-url').value.trim(),
+        remoteToken: document.getElementById('ds-remote-token').value.trim(),
+      })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      status.className = 'conn-status success';
+      status.textContent = `✓ Conectado! Loja: "${data.store || '—'}" · ${data.products} produto(s).`;
+    } else {
+      status.className = 'conn-status error';
+      status.textContent = '✕ ' + (data.error || 'Falha na conexão.');
+    }
+  } catch (e) {
+    status.className = 'conn-status error';
+    status.textContent = '✕ ' + e.message;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Testar conexão';
+  }
+};
+
+// ─── Publish ──────────────────────────────────────────────────
+document.getElementById('btn-publish').onclick = () => {
+  document.getElementById('publish-status').className = 'status-msg';
+  document.getElementById('publish-status').textContent = '';
+  document.getElementById('publish-modal').classList.add('open');
+};
+
+document.getElementById('btn-confirm-publish').onclick = async () => {
+  const message = document.getElementById('commit-message').value.trim() || 'Atualizar catálogo';
+  const btn = document.getElementById('btn-confirm-publish');
+  btn.disabled = true;
+  btn.textContent = 'Publicando...';
+
+  const statusEl = document.getElementById('publish-status');
+  statusEl.className = 'status-msg';
+  statusEl.textContent = '';
+
+  try {
+    const res = await fetch('/api/publish', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      statusEl.className = 'status-msg success';
+      statusEl.textContent = data.message;
+      document.getElementById('changes-dot').classList.remove('visible');
+    } else {
+      statusEl.className = 'status-msg error';
+      statusEl.textContent = data.error || 'Erro ao publicar.';
+    }
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '↑ Publicar agora';
+  }
+};
+
+async function checkGitStatus() {
+  try {
+    const res = await fetch('/api/git-status');
+    const data = await res.json();
+    const dot = document.getElementById('changes-dot');
+    if (data.ok && data.has_changes) {
+      dot.classList.add('visible');
+    } else {
+      dot.classList.remove('visible');
+    }
+  } catch {}
+}
+
+// ─── Toast ────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type = '') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = 'toast'; }, 3000);
+}
+
+// Close modals on overlay click
+['product-modal', 'publish-modal'].forEach(id => {
+  document.getElementById(id).addEventListener('click', e => {
+    if (e.target.id === id) e.target.classList.remove('open');
+  });
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+  }
+});
+
+loadData();
+</script>
+</body>
+</html>

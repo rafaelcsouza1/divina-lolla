@@ -354,6 +354,25 @@ def catalog_put():
 
 
 # ─── Juntar catálogos que foram editados em paralelo ──────────────────────────
+def _explain_git_error(stderr):
+    """Traduz os erros de git mais comuns para algo que dê para agir."""
+    t = (stderr or "").lower()
+    # Rede primeiro: "access rights" aparece no rodapé de quase toda falha de
+    # SSH do git, inclusive quando o problema foi só de conexão.
+    if any(x in t for x in ("could not resolve host", "network is unreachable",
+                            "timed out", "connection refused", "no route to host",
+                            "temporary failure in name resolution")):
+        return "Sem conexão com a internet. Conecte e tente publicar de novo."
+    if "permission denied" in t or "publickey" in t:
+        return ("Este computador ainda não está liberado para publicar. Rode o "
+                "instalar.command de novo, copie a chave que ele mostra no final "
+                "e mande para o Rafael liberar o acesso.")
+    if any(x in t for x in ("non-fast-forward", "fetch first", "[rejected]")):
+        return ("A outra máquina publicou algo novo nesse meio-tempo. Clique em "
+                "Publicar mais uma vez para juntar as alterações e enviar.")
+    return (stderr or "").strip() or "Erro ao enviar para o GitHub."
+
+
 def _merge_names(base, remote, local):
     """Une duas listas de nomes respeitando o que cada lado removeu."""
     b, r, l = set(base), set(remote), set(local)
@@ -429,9 +448,7 @@ def _sync_with_remote(repo_dir):
     """Traz o que a outra máquina publicou. Devolve (ok, pulled, merged, erro)."""
     fetch = _git(repo_dir, "fetch", "origin")
     if fetch.returncode != 0:
-        return False, False, False, (
-            fetch.stderr.strip() or "Não foi possível falar com o GitHub. Confira a internet."
-        )
+        return False, False, False, _explain_git_error(fetch.stderr)
 
     upstream = _git(repo_dir, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}")
     ref = upstream.stdout.strip() if upstream.returncode == 0 else "origin/main"
@@ -544,7 +561,7 @@ def publish():
 
         push = _git(repo_dir, "push")
         if push.returncode != 0:
-            return jsonify({"ok": False, "error": push.stderr.strip() or "Erro ao enviar para GitHub."})
+            return jsonify({"ok": False, "error": _explain_git_error(push.stderr)})
 
         if merged:
             return jsonify({

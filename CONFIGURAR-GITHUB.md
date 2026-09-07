@@ -44,6 +44,57 @@ então trate o `.zip` como uma senha. Para revogar:
 Para gerar um pacote novo (por exemplo, depois de revogar e criar outra
 credencial), rode `./empacotar.command`.
 
+## Painel hospedado, com senha
+
+Além do pacote de desktop, o painel pode rodar num servidor — assim dá para
+cadastrar peças pelo celular, de qualquer lugar, sem depender do Mac ligado.
+
+    Dockerfile          imagem: só o código, nada de segredo
+    entrypoint.sh       no boot: grava a credencial, clona o repo, sobe o gunicorn
+    render.yaml         blueprint do Render
+    requirements-server.txt
+
+### Subir no Render
+
+1. Render → **New** → **Blueprint** e aponte para este repositório.
+2. Defina as duas variáveis que o blueprint pede:
+
+   - `ADMIN_PASSWORD` — a senha de quem entra no painel.
+   - `PUBLISH_KEY_B64` — a credencial de publicação em base64:
+
+         base64 -i chave/publicar | tr -d '\n'
+
+   O `SECRET_KEY` o Render gera sozinho. Ele mantém a sessão viva entre
+   reinícios; sem ele, cada restart desloga quem estava dentro.
+
+3. O painel sobe em `https://<nome>.onrender.com` e pede a senha.
+
+### O que muda no painel hospedado
+
+- **Login obrigatório.** Sem `ADMIN_PASSWORD` o serviço se recusa a subir, em
+  dois pontos independentes: no `entrypoint.sh` e no próprio `app.py`. Um
+  painel aberto na internet seria um formulário público de edição do site.
+- **Salvar já publica.** O disco desses serviços é efêmero: o que ficasse
+  esperando o botão Publicar sumiria no próximo reinício, sem aviso. Para
+  desligar esse comportamento, defina `AUTO_PUBLISH=0` — mas então avise quem
+  usa que precisa clicar em Publicar antes de fechar.
+- **Um worker só.** O controle de tentativas de senha vive na memória do
+  processo, e dois workers no mesmo clone git disputariam o índice.
+- **No plano gratuito o serviço hiberna.** O primeiro acesso depois de um tempo
+  parado leva de trinta a sessenta segundos para responder.
+
+### Recomendação sobre a credencial
+
+Gere uma deploy key **separada** para o servidor, em vez de reaproveitar a que
+vai no pacote de desktop. Assim, revogar o acesso de um não derruba o outro:
+
+    ssh-keygen -t ed25519 -N "" -C "painel-servidor" -f chave/servidor
+    gh repo deploy-key add chave/servidor.pub \
+      --repo rafaelcsouza1/divina-lolla \
+      --allow-write --title "Painel hospedado"
+
+Use `chave/servidor` para gerar o `PUBLISH_KEY_B64`.
+
 ## Domínio próprio (opcional)
 
 Por padrão o site fica em `https://rafaelcsouza1.github.io/divina-lolla/`.

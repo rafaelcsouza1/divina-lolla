@@ -1,25 +1,41 @@
 import os
 import io
 import json
+import hmac
+import time
 import uuid
 import base64
+import secrets
 import mimetypes
 import subprocess
 import urllib.request
 import urllib.error
+from datetime import timedelta
 from pathlib import Path
-from flask import Flask, request, jsonify, send_from_directory, render_template
+from flask import (
+    Flask, request, jsonify, send_from_directory, render_template,
+    session, redirect, url_for,
+)
 
 BASE_DIR = Path(__file__).parent
+
+# Hospedado, o painel trabalha num clone do repositório feito no boot, porque o
+# disco desses serviços é efêmero e o GitHub é o armazenamento de verdade.
+# Sem REPO_DIR, o comportamento é o de sempre: a pasta do próprio projeto.
+_repo_dir = os.environ.get("REPO_DIR", "").strip()
+REPO_ROOT = Path(_repo_dir).expanduser() if _repo_dir else BASE_DIR.parent
+
 # A pasta do site chama-se "docs" porque o GitHub Pages só serve a raiz
 # do repositório ou /docs quando publica a partir de uma branch.
-SITE_DIR = BASE_DIR.parent / "docs"
+SITE_DIR = REPO_ROOT / "docs"
 PRODUCTS_JSON = SITE_DIR / "products.json"
 IMAGES_DIR = SITE_DIR / "images"
 CONFIG_JSON = BASE_DIR / "config.json"
-# Credencial de publicação que viaja junto no pacote. Vale só para este
-# repositório e fica fora do controle de versão (veja o .gitignore).
-PUBLISH_KEY = BASE_DIR.parent / "chave" / "publicar"
+# Credencial de publicação. No pacote de desktop ela viaja em chave/publicar;
+# hospedado, o entrypoint grava num caminho fora do repositório e aponta
+# PUBLISH_KEY_PATH para lá. Vale só para este repositório e nunca é versionada.
+_key_path = os.environ.get("PUBLISH_KEY_PATH", "").strip()
+PUBLISH_KEY = Path(_key_path).expanduser() if _key_path else BASE_DIR.parent / "chave" / "publicar"
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
 
 # ─── Config (admin-only settings; NÃO publicado no site público) ──────────────
@@ -50,6 +66,118 @@ DEFAULT_CATALOG = {
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB
+
+
+# ─── Senha do painel ──────────────────────────────────────────────────────────
+# A senha só existe quando ADMIN_PASSWORD está no ambiente. Sem ela, o painel
+# roda como sempre rodou — o que é seguro porque escuta em 127.0.0.1, alcançável
+# apenas pela própria máquina. Hospedado, sem senha, seria um formulário público
+# de edição do site: por isso as duas travas mais abaixo se recusam a subir.
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "")
+AUTH_ENABLED = bool(ADMIN_PASSWORD)
+
+# Hospedado, cada alteração já vai para o site. O disco desses serviços é
+# efêmero: o que ficasse esperando o botão Publicar sumiria no próximo
+# reinício, sem aviso. No pacote de desktop nada muda — lá o arquivo fica no
+# computador e publicar continua sendo uma decisão de quem cadastra.
+AUTO_PUBLISH = os.environ.get(
+    "AUTO_PUBLISH", "1" if _repo_dir else "0"
+).strip() not in ("", "0")
+
+# Chave de sessão fixa entre reinícios quando informada; sem ela, todo restart
+# desloga quem estava dentro.
+app.secret_key = os.environ.get("SECRET_KEY") or secrets.token_hex(32)
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    # Atrás de HTTPS o cookie não deve trafegar em claro. Localmente não há
+    # HTTPS, e exigir isso impediria o login.
+    SESSION_COOKIE_SECURE=os.environ.get("FORCE_HTTPS", "").strip() not in ("", "0"),
+    PERMANENT_SESSION_LIFETIME=timedelta(days=7),
+)
+
+# Hospedado é justamente onde a senha não pode faltar.
+if _repo_dir and not AUTH_ENABLED:
+    raise RuntimeError(
+        "REPO_DIR indica painel hospedado, mas ADMIN_PASSWORD não foi definida. "
+        "Sem senha o painel ficaria aberto na internet: qualquer pessoa com o "
+        "endereço poderia apagar o catálogo e publicar no site."
+    )
+
+# Rotas que a sessão não guarda: a própria tela de login, os arquivos estáticos
+# e a API de catálogo, que tem o seu próprio token.
+OPEN_ENDPOINTS = {"login", "logout", "static", "catalog_get", "catalog_put"}
+
+MAX_TENTATIVAS = 5
+BLOQUEIO_SEGUNDOS = 60
+_tentativas = {}  # ip -> [falhas, momento da última]
+
+
+def _bloqueio_restante(ip):
+    falhas, quando = _tentativas.get(ip, (0, 0.0))
+    if falhas < MAX_TENTATIVAS:
+        return 0
+    faltam = int(BLOQUEIO_SEGUNDOS - (time.time() - quando))
+    if faltam <= 0:
+        _tentativas.pop(ip, None)
+        return 0
+    return faltam
+
+
+def _registrar_falha(ip):
+    falhas, _ = _tentativas.get(ip, (0, 0.0))
+    _tentativas[ip] = (falhas + 1, time.time())
+
+
+def logado():
+    return bool(session.get("auth"))
+
+
+@app.before_request
+def _exigir_login():
+    if not AUTH_ENABLED or logado() or request.endpoint in OPEN_ENDPOINTS:
+        return None
+    # Chamada de tela devolve JSON; navegação vai para o login.
+    if request.path.startswith("/api/"):
+        return jsonify({"error": "Sessão expirada. Entre de novo para continuar."}), 401
+    # full_path deixa um "?" solto quando não há query; ele iria para a barra
+    # de endereços depois do login.
+    return redirect(url_for("login", next=request.full_path.rstrip("?")))
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if not AUTH_ENABLED:
+        return redirect("/")
+
+    erro = None
+    ip = request.remote_addr or "?"
+
+    if request.method == "POST":
+        faltam = _bloqueio_restante(ip)
+        if faltam:
+            erro = f"Muitas tentativas erradas. Espere {faltam} segundos."
+        elif hmac.compare_digest(request.form.get("password", ""), ADMIN_PASSWORD):
+            session.clear()
+            session["auth"] = True
+            session.permanent = True
+            _tentativas.pop(ip, None)
+            destino = request.args.get("next") or "/"
+            # Só caminho interno: "//outro.site" seria um redirecionamento externo.
+            if not destino.startswith("/") or destino.startswith("//"):
+                destino = "/"
+            return redirect(destino)
+        else:
+            _registrar_falha(ip)
+            erro = "Senha incorreta."
+
+    return render_template("login.html", erro=erro), (401 if erro else 200)
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login") if AUTH_ENABLED else "/")
 
 
 # ─── Config helpers ───────────────────────────────────────────────────────────
@@ -205,7 +333,8 @@ def _remove_image(image_ref):
 # ─── Páginas ──────────────────────────────────────────────────────────────────
 @app.route("/")
 def index():
-    return render_template("index.html")
+    # O botão de sair só faz sentido quando há uma sessão para encerrar.
+    return render_template("index.html", auth=AUTH_ENABLED)
 
 
 # ─── Dados do catálogo (usados pelo admin) ────────────────────────────────────
@@ -236,7 +365,8 @@ def update_store():
     if "products" in body:
         data["products"] = body["products"]
     save_data(data)
-    return jsonify({"ok": True})
+    aviso = _auto_publicar("Atualizar dados da loja")
+    return jsonify({"ok": True, "aviso": aviso})
 
 
 @app.route("/api/products", methods=["POST"])
@@ -264,7 +394,8 @@ def add_product():
         data["categories"].append(cat)
 
     save_data(data)
-    return jsonify({"ok": True, "product": product})
+    aviso = _auto_publicar(f"Cadastrar {product['name'] or 'peça'}")
+    return jsonify({"ok": True, "product": product, "aviso": aviso})
 
 
 @app.route("/api/products/<product_id>", methods=["PUT"])
@@ -291,7 +422,8 @@ def update_product(product_id):
     ))
 
     save_data(data)
-    return jsonify({"ok": True, "product": product})
+    aviso = _auto_publicar(f"Editar {product['name'] or 'peça'}")
+    return jsonify({"ok": True, "product": product, "aviso": aviso})
 
 
 @app.route("/api/products/<product_id>", methods=["DELETE"])
@@ -309,7 +441,8 @@ def delete_product(product_id):
     ))
 
     save_data(data)
-    return jsonify({"ok": True})
+    aviso = _auto_publicar(f"Remover {product.get('name') or 'peça'}")
+    return jsonify({"ok": True, "aviso": aviso})
 
 
 # ─── Configurador ─────────────────────────────────────────────────────────────
@@ -368,9 +501,14 @@ def test_connection():
 # ─── API do catálogo (permite que ESTE servidor seja a fonte remota) ──────────
 def _check_api_token():
     required = load_config()["server"].get("apiToken", "")
-    if not required:
+    if required and hmac.compare_digest(request.headers.get("X-Api-Token", ""), required):
         return True
-    return request.headers.get("X-Api-Token", "") == required
+    if logado():
+        return True
+    # Sem senha e sem token, a API segue aberta como antes — o que só é seguro
+    # porque nesse caso o painel escuta em 127.0.0.1. Com senha configurada
+    # (painel hospedado), liberar aqui seria reabrir a porta por outro caminho.
+    return not AUTH_ENABLED and not required
 
 
 @app.route("/api/catalog", methods=["GET"])
@@ -549,22 +687,20 @@ def sync():
         return jsonify({"ok": False, "error": "Git não encontrado. Rode: xcode-select --install"})
 
 
-@app.route("/api/publish", methods=["POST"])
-def publish():
-    body = request.json or {}
-    message = body.get("message", "Atualizar catálogo de produtos").strip() or "Atualizar catálogo"
+def _publicar(message):
+    """Envia o catálogo para o site. Devolve o mesmo dicionário que a tela recebe."""
     repo_dir = SITE_DIR.parent
 
     # "Publicar" só faz sentido para enviar ao site online (GitHub Pages).
     # Localmente o catálogo já é atualizado ao salvar — não precisa publicar.
     if not _repo_ready(repo_dir):
-        return jsonify({
+        return {
             "ok": False,
             "local_only": True,
             "error": "Ainda não há um repositório GitHub configurado, então não há site online para atualizar. "
                      "As alterações já valem no site local automaticamente. "
-                     "Para publicar na internet, siga o guia CONFIGURAR-GITHUB.md."
-        })
+                     "Para publicar na internet, siga o guia CONFIGURAR-GITHUB.md.",
+        }
 
     try:
         _git(repo_dir, "add", "-A")
@@ -572,42 +708,64 @@ def publish():
         if not nothing_new:
             commit = _git(repo_dir, "commit", "-m", message)
             if commit.returncode != 0:
-                return jsonify({
+                return {
                     "ok": False,
                     "error": commit.stderr.strip() or "Erro ao registrar as alterações.",
-                })
+                }
 
         # Outra máquina pode ter publicado nesse meio-tempo: junta antes de enviar,
         # senão o push é recusado pelo GitHub.
         ok, pulled, merged, err = _sync_with_remote(repo_dir)
         if not ok:
-            return jsonify({"ok": False, "error": err})
+            return {"ok": False, "error": err}
 
         ahead = _git(repo_dir, "rev-list", "--count", "@{u}..HEAD")
         if ahead.returncode == 0 and ahead.stdout.strip() == "0":
             if pulled:
-                return jsonify({
+                return {
                     "ok": True,
                     "changed": True,
                     "message": "Nada seu para enviar, mas trouxe o que a outra máquina publicou. "
                                "Recarregue a página para ver.",
-                })
-            return jsonify({"ok": True, "message": "Nenhuma alteração para publicar."})
+                }
+            return {"ok": True, "message": "Nenhuma alteração para publicar."}
 
         push = _git(repo_dir, "push")
         if push.returncode != 0:
-            return jsonify({"ok": False, "error": _explain_git_error(push.stderr)})
+            return {"ok": False, "error": _explain_git_error(push.stderr)}
 
         if merged:
-            return jsonify({
+            return {
                 "ok": True,
                 "changed": True,
                 "message": "Publicado! As alterações da outra máquina foram juntadas ao seu "
                            "catálogo — recarregue a página para vê-las.",
-            })
-        return jsonify({"ok": True, "message": "Publicado com sucesso no GitHub Pages!"})
+            }
+        return {"ok": True, "message": "Publicado com sucesso no GitHub Pages!"}
     except FileNotFoundError:
-        return jsonify({"ok": False, "error": "Git não encontrado. Rode: xcode-select --install"})
+        return {"ok": False, "error": "Git não encontrado. Rode: xcode-select --install"}
+
+
+def _auto_publicar(descricao):
+    """No painel hospedado, salva já significa publicar.
+
+    Esses serviços têm disco efêmero: o que ficasse só no servidor sumiria no
+    próximo reinício. Devolve um aviso quando o envio falha — a peça continua
+    salva, mas quem cadastrou precisa saber que o site não recebeu.
+    """
+    if not AUTO_PUBLISH:
+        return None
+    resultado = _publicar(descricao)
+    if resultado.get("ok"):
+        return None
+    return resultado.get("error") or "A peça foi salva, mas o site não recebeu a alteração."
+
+
+@app.route("/api/publish", methods=["POST"])
+def publish():
+    body = request.json or {}
+    message = body.get("message", "Atualizar catálogo de produtos").strip() or "Atualizar catálogo"
+    return jsonify(_publicar(message))
 
 
 @app.route("/api/git-status")
@@ -636,6 +794,17 @@ if __name__ == "__main__":
     host = cfg["server"].get("host", "127.0.0.1")
     port = int(cfg["server"].get("port", 5001))
     open_host = "localhost" if host in ("0.0.0.0", "127.0.0.1", "") else host
+
+    # Escutar fora do 127.0.0.1 expõe o painel à rede. Sem senha, quem chegasse
+    # nele apagaria o catálogo e publicaria no site — então melhor não subir.
+    if host not in ("127.0.0.1", "localhost", "::1") and not AUTH_ENABLED:
+        raise SystemExit(
+            f"\nO painel está configurado para escutar em {host}, o que o deixa\n"
+            "acessível a outros aparelhos, mas nenhuma senha foi definida.\n\n"
+            "Defina uma senha antes de subir assim:\n"
+            "    ADMIN_PASSWORD='sua-senha' python admin/app.py\n\n"
+            "Ou volte a fonte para 127.0.0.1 na tela de Configurações.\n"
+        )
 
     def open_browser():
         import time

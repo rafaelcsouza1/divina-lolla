@@ -1,0 +1,19 @@
+# Blueprint do Render para o painel hospedado.
+# Suba com: Render -> New -> Blueprint, apontando para este repositório.
+services:
+  - type: web
+    name: divina-lolla-painel
+    runtime: docker
+    plan: free
+    healthCheckPath: /login
+    envVars:
+      # Senha de quem entra no painel. Defina no Render, nunca aqui.
+      - key: ADMIN_PASSWORD
+        sync: false
+      # Credencial de publicação em base64:
+      #   base64 -i chave/publicar | tr -d '\n'
+      - key: PUBLISH_KEY_B64
+        sync: false
+      # Mantém a sessão viva entre reinícios. Gerado pelo Render.
+      - key: SECRET_KEY
+        generateValue: true

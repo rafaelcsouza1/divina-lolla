@@ -126,6 +126,14 @@
       "image": "images/cdecbeb8-3511-4015-9765-1621c5749385.png",
       "name": "Amuleto de proteção e boas energias",
       "price": "18"
+    },
+    {
+      "id": "679e58ea-f8ad-42e1-9482-4414b7f43fc7",
+      "name": "Pulseira coração vazado",
+      "description": "",
+      "price": "20",
+      "category": "Pulseiras de aço inox",
+      "image": "images/679e58ea-f8ad-42e1-9482-4414b7f43fc7.png"
     }
   ]
 }

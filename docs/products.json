@@ -35,14 +35,6 @@
       "price": "10",
       "category": "Brincos divertidos",
       "image": "images/552e987d-b6d5-4f26-aee2-fddbe7e0f1c5.png"
-    },
-    {
-      "id": "f42eba2d-7b90-4ee4-a4d6-95f34e258d1d",
-      "name": "Brinco coelho",
-      "description": "",
-      "price": "10",
-      "category": "Brincos divertidos",
-      "image": "images/f42eba2d-7b90-4ee4-a4d6-95f34e258d1d.png"
     }
   ]
 }

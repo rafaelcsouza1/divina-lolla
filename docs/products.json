@@ -279,6 +279,14 @@
       "price": "10",
       "category": "Brincos 3D",
       "image": "images/d9c8cd09-dfbe-4869-ab28-cd96a4388e94.png"
+    },
+    {
+      "id": "fe6ffee9-dace-4646-b734-64e4bc53284c",
+      "name": "Brinco abelha",
+      "description": "",
+      "price": "10",
+      "category": "Brincos 3D",
+      "image": "images/fe6ffee9-dace-4646-b734-64e4bc53284c.png"
     }
   ]
 }

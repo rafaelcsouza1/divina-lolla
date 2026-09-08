@@ -231,6 +231,14 @@
       "price": "10",
       "category": "Brincos 3D",
       "image": "images/0d661790-25da-4caf-bdec-dd29d4d71eea.png"
+    },
+    {
+      "id": "9b0f850d-673e-46fe-8d96-7e96735f0ec5",
+      "name": "Brinco coração",
+      "description": "",
+      "price": "10",
+      "category": "Brincos 3D",
+      "image": "images/9b0f850d-673e-46fe-8d96-7e96735f0ec5.png"
     }
   ]
 }

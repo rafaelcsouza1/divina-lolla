@@ -13,7 +13,8 @@
     "Amuletos",
     "Brincos 3D",
     "Brincos divertidos",
-    "Pulseiras de aço inox"
+    "Pulseiras de aço inox",
+    "Marcador de páginas"
   ],
   "products": [
     {
@@ -209,84 +210,84 @@
       "price": "10"
     },
     {
+      "category": "Brincos 3D",
+      "description": "",
       "id": "fc2d03de-74b0-4cfe-ade9-5c5446c2d307",
+      "image": "images/fc2d03de-74b0-4cfe-ade9-5c5446c2d307.png",
       "name": "Brinco patinha",
-      "description": "",
-      "price": "10",
-      "category": "Brincos 3D",
-      "image": "images/fc2d03de-74b0-4cfe-ade9-5c5446c2d307.png"
+      "price": "10"
     },
     {
+      "category": "Brincos 3D",
+      "description": "",
       "id": "09c7fb75-6482-409a-9268-f70db1286de8",
+      "image": "images/09c7fb75-6482-409a-9268-f70db1286de8.png",
       "name": "Brinco sereia",
-      "description": "",
-      "price": "10",
-      "category": "Brincos 3D",
-      "image": "images/09c7fb75-6482-409a-9268-f70db1286de8.png"
+      "price": "10"
     },
     {
+      "category": "Brincos 3D",
+      "description": "",
       "id": "0d661790-25da-4caf-bdec-dd29d4d71eea",
+      "image": "images/0d661790-25da-4caf-bdec-dd29d4d71eea.png",
       "name": "Brinco lua e estrela",
-      "description": "",
-      "price": "10",
-      "category": "Brincos 3D",
-      "image": "images/0d661790-25da-4caf-bdec-dd29d4d71eea.png"
+      "price": "10"
     },
     {
+      "category": "Brincos 3D",
+      "description": "",
       "id": "9b0f850d-673e-46fe-8d96-7e96735f0ec5",
+      "image": "images/9b0f850d-673e-46fe-8d96-7e96735f0ec5.png",
       "name": "Brinco coração",
-      "description": "",
-      "price": "10",
-      "category": "Brincos 3D",
-      "image": "images/9b0f850d-673e-46fe-8d96-7e96735f0ec5.png"
+      "price": "10"
     },
     {
+      "category": "Brincos 3D",
+      "description": "",
       "id": "6272a743-6d76-4dba-afad-c990b19f76e1",
+      "image": "images/6272a743-6d76-4dba-afad-c990b19f76e1.png",
       "name": "Brinco árvore da vida",
-      "description": "",
-      "price": "10",
-      "category": "Brincos 3D",
-      "image": "images/6272a743-6d76-4dba-afad-c990b19f76e1.png"
+      "price": "10"
     },
     {
+      "category": "Brincos 3D",
+      "description": "",
       "id": "f7f09dec-dc64-4932-b6ad-3924eef570c0",
+      "image": "images/f7f09dec-dc64-4932-b6ad-3924eef570c0.png",
       "name": "Brinco losango azul",
-      "description": "",
-      "price": "10",
-      "category": "Brincos 3D",
-      "image": "images/f7f09dec-dc64-4932-b6ad-3924eef570c0.png"
+      "price": "10"
     },
     {
+      "category": "Brincos 3D",
+      "description": "",
       "id": "628b5b11-ccd3-4504-a950-fecff3838528",
+      "image": "images/628b5b11-ccd3-4504-a950-fecff3838528.png",
       "name": "Brinco pentagrama",
-      "description": "",
-      "price": "10",
-      "category": "Brincos 3D",
-      "image": "images/628b5b11-ccd3-4504-a950-fecff3838528.png"
+      "price": "10"
     },
     {
+      "category": "Brincos 3D",
+      "description": "",
       "id": "85414b6b-718b-45a1-817c-17b902acd861",
+      "image": "images/85414b6b-718b-45a1-817c-17b902acd861.png",
       "name": "Brinco Lua e gato",
-      "description": "",
-      "price": "10",
-      "category": "Brincos 3D",
-      "image": "images/85414b6b-718b-45a1-817c-17b902acd861.png"
+      "price": "10"
     },
     {
+      "category": "Brincos 3D",
+      "description": "",
       "id": "d9c8cd09-dfbe-4869-ab28-cd96a4388e94",
+      "image": "images/d9c8cd09-dfbe-4869-ab28-cd96a4388e94.png",
       "name": "Brinco folha",
-      "description": "",
-      "price": "10",
-      "category": "Brincos 3D",
-      "image": "images/d9c8cd09-dfbe-4869-ab28-cd96a4388e94.png"
+      "price": "10"
     },
     {
-      "id": "fe6ffee9-dace-4646-b734-64e4bc53284c",
-      "name": "Brinco abelha",
-      "description": "",
-      "price": "10",
       "category": "Brincos 3D",
-      "image": "images/fe6ffee9-dace-4646-b734-64e4bc53284c.png"
+      "description": "",
+      "id": "fe6ffee9-dace-4646-b734-64e4bc53284c",
+      "image": "images/fe6ffee9-dace-4646-b734-64e4bc53284c.png",
+      "name": "Brinco abelha",
+      "price": "10"
     }
   ]
 }

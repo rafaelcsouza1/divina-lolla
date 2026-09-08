@@ -312,6 +312,14 @@
       "price": "5",
       "category": "Marcador de páginas",
       "image": "images/fb0ac28b-645d-4c39-b3b9-d1367c77f58d.png"
+    },
+    {
+      "id": "d98a0dd8-2ff1-4f43-9379-2341314235eb",
+      "name": "Marcador borboleta",
+      "description": "",
+      "price": "5",
+      "category": "Marcador de páginas",
+      "image": "images/d98a0dd8-2ff1-4f43-9379-2341314235eb.png"
     }
   ]
 }

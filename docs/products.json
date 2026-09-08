@@ -207,6 +207,14 @@
       "image": "images/4e829472-5390-4cf9-a4f1-9fb5411b361e.png",
       "name": "Piranha com cristais roxo",
       "price": "10"
+    },
+    {
+      "id": "fc2d03de-74b0-4cfe-ade9-5c5446c2d307",
+      "name": "Brinco patinha",
+      "description": "",
+      "price": "10",
+      "category": "Brincos 3D",
+      "image": "images/fc2d03de-74b0-4cfe-ade9-5c5446c2d307.png"
     }
   ]
 }

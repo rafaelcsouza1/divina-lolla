@@ -215,6 +215,14 @@
       "price": "10",
       "category": "Brincos 3D",
       "image": "images/fc2d03de-74b0-4cfe-ade9-5c5446c2d307.png"
+    },
+    {
+      "id": "09c7fb75-6482-409a-9268-f70db1286de8",
+      "name": "Brinco sereia",
+      "description": "",
+      "price": "10",
+      "category": "Brincos 3D",
+      "image": "images/09c7fb75-6482-409a-9268-f70db1286de8.png"
     }
   ]
 }

@@ -304,6 +304,14 @@
       "price": "5",
       "category": "Marcador de páginas",
       "image": "images/d67c3c2e-89ae-424d-95b5-a06b1e739d7d.png"
+    },
+    {
+      "id": "fb0ac28b-645d-4c39-b3b9-d1367c77f58d",
+      "name": "Marcador de páginas gatinho",
+      "description": "",
+      "price": "5",
+      "category": "Marcador de páginas",
+      "image": "images/fb0ac28b-645d-4c39-b3b9-d1367c77f58d.png"
     }
   ]
 }

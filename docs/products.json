@@ -320,6 +320,14 @@
       "price": "5",
       "category": "Marcador de páginas",
       "image": "images/d98a0dd8-2ff1-4f43-9379-2341314235eb.png"
+    },
+    {
+      "id": "b96d290c-b5b2-4da4-b701-b5d6826fb6ef",
+      "name": "Marcador patinha preto",
+      "description": "",
+      "price": "5",
+      "category": "Marcador de páginas",
+      "image": "images/b96d290c-b5b2-4da4-b701-b5d6826fb6ef.png"
     }
   ]
 }

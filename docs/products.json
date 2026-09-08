@@ -328,6 +328,14 @@
       "price": "5",
       "category": "Marcador de páginas",
       "image": "images/b96d290c-b5b2-4da4-b701-b5d6826fb6ef.png"
+    },
+    {
+      "id": "a79b4833-7c41-43bb-aa34-ec3e7c44aea7",
+      "name": "Marcador patinha rosa",
+      "description": "",
+      "price": "5",
+      "category": "Marcador de páginas",
+      "image": "images/a79b4833-7c41-43bb-aa34-ec3e7c44aea7.png"
     }
   ]
 }

@@ -12,7 +12,8 @@
     "Acessórios de cabelo",
     "Amuletos",
     "Brincos divertidos",
-    "Pulseiras de aço inox"
+    "Pulseiras de aço inox",
+    "Brincos 3D"
   ],
   "products": [
     {
@@ -128,84 +129,84 @@
       "price": "18"
     },
     {
+      "category": "Pulseiras de aço inox",
+      "description": "",
       "id": "679e58ea-f8ad-42e1-9482-4414b7f43fc7",
+      "image": "images/679e58ea-f8ad-42e1-9482-4414b7f43fc7.png",
       "name": "Pulseira coração vazado",
-      "description": "",
-      "price": "20",
-      "category": "Pulseiras de aço inox",
-      "image": "images/679e58ea-f8ad-42e1-9482-4414b7f43fc7.png"
+      "price": "20"
     },
     {
+      "category": "Pulseiras de aço inox",
+      "description": "",
       "id": "61fb8b03-240d-4f8d-9de8-03facb58a5ca",
+      "image": "images/61fb8b03-240d-4f8d-9de8-03facb58a5ca.png",
       "name": "Pulseira coração",
-      "description": "",
-      "price": "20",
-      "category": "Pulseiras de aço inox",
-      "image": "images/61fb8b03-240d-4f8d-9de8-03facb58a5ca.png"
+      "price": "20"
     },
     {
+      "category": "Pulseiras de aço inox",
+      "description": "",
       "id": "3c4462d7-83e6-4a9a-a47f-14658d55cb67",
+      "image": "images/3c4462d7-83e6-4a9a-a47f-14658d55cb67.png",
       "name": "Pulseira trevo",
-      "description": "",
-      "price": "20",
-      "category": "Pulseiras de aço inox",
-      "image": "images/3c4462d7-83e6-4a9a-a47f-14658d55cb67.png"
+      "price": "20"
     },
     {
+      "category": "Pulseiras de aço inox",
+      "description": "",
       "id": "892530d2-8b1b-454c-beea-c673556f1eb4",
+      "image": "images/892530d2-8b1b-454c-beea-c673556f1eb4.png",
       "name": "Pulseira coroa",
-      "description": "",
-      "price": "20",
-      "category": "Pulseiras de aço inox",
-      "image": "images/892530d2-8b1b-454c-beea-c673556f1eb4.png"
+      "price": "20"
     },
     {
+      "category": "Pulseiras de aço inox",
+      "description": "",
       "id": "a675fce8-d02a-43b3-bfaa-99a0550caf60",
+      "image": "images/a675fce8-d02a-43b3-bfaa-99a0550caf60.png",
       "name": "Pulseira estrela",
-      "description": "",
-      "price": "20",
-      "category": "Pulseiras de aço inox",
-      "image": "images/a675fce8-d02a-43b3-bfaa-99a0550caf60.png"
+      "price": "20"
     },
     {
+      "category": "Pulseiras de aço inox",
+      "description": "",
       "id": "a01dc26a-7fc8-4a7b-92be-66465ad43952",
+      "image": "images/a01dc26a-7fc8-4a7b-92be-66465ad43952.png",
       "name": "Pulseira Butterfly",
-      "description": "",
-      "price": "20",
-      "category": "Pulseiras de aço inox",
-      "image": "images/a01dc26a-7fc8-4a7b-92be-66465ad43952.png"
+      "price": "20"
     },
     {
+      "category": "Pulseiras de aço inox",
+      "description": "",
       "id": "0bb7ca7f-c644-4628-ac86-ff9693e1681d",
+      "image": "images/0bb7ca7f-c644-4628-ac86-ff9693e1681d.png",
       "name": "Pulseira cereja",
-      "description": "",
-      "price": "20",
-      "category": "Pulseiras de aço inox",
-      "image": "images/0bb7ca7f-c644-4628-ac86-ff9693e1681d.png"
+      "price": "20"
     },
     {
+      "category": "Acessórios de cabelo",
+      "description": "",
       "id": "8ae3084a-ed5f-4a81-b1f0-8b7a50da96e2",
+      "image": "images/8ae3084a-ed5f-4a81-b1f0-8b7a50da96e2.png",
       "name": "Kit presilhas oncinha",
-      "description": "",
-      "price": "10",
-      "category": "Acessórios de cabelo",
-      "image": "images/8ae3084a-ed5f-4a81-b1f0-8b7a50da96e2.png"
+      "price": "10"
     },
     {
+      "category": "Acessórios de cabelo",
+      "description": "",
       "id": "c6c1810c-4d10-4111-842b-f34af7cb8c7f",
+      "image": "images/c6c1810c-4d10-4111-842b-f34af7cb8c7f.png",
       "name": "Kit elásticos de cabelo tons neutros",
-      "description": "",
-      "price": "5",
-      "category": "Acessórios de cabelo",
-      "image": "images/c6c1810c-4d10-4111-842b-f34af7cb8c7f.png"
+      "price": "5"
     },
     {
-      "id": "4e829472-5390-4cf9-a4f1-9fb5411b361e",
-      "name": "Piranha com cristais roxo",
-      "description": "",
-      "price": "10",
       "category": "Acessórios de cabelo",
-      "image": "images/4e829472-5390-4cf9-a4f1-9fb5411b361e.png"
+      "description": "",
+      "id": "4e829472-5390-4cf9-a4f1-9fb5411b361e",
+      "image": "images/4e829472-5390-4cf9-a4f1-9fb5411b361e.png",
+      "name": "Piranha com cristais roxo",
+      "price": "10"
     }
   ]
 }

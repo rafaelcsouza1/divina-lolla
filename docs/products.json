@@ -288,6 +288,14 @@
       "image": "images/fe6ffee9-dace-4646-b734-64e4bc53284c.png",
       "name": "Brinco abelha",
       "price": "10"
+    },
+    {
+      "id": "060101b0-573f-4dfa-aead-741a59c30428",
+      "name": "Kit Marcador de páginas místico",
+      "description": "",
+      "price": "10",
+      "category": "Marcador de páginas",
+      "image": "images/060101b0-573f-4dfa-aead-741a59c30428.jpg"
     }
   ]
 }

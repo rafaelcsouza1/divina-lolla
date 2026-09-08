@@ -13,8 +13,8 @@
     "Amuletos",
     "Brincos 3D",
     "Brincos divertidos",
-    "Pulseiras de aço inox",
-    "Marcador de páginas"
+    "Marcador de páginas",
+    "Pulseiras de aço inox"
   ],
   "products": [
     {
@@ -336,14 +336,6 @@
       "price": "5",
       "category": "Marcador de páginas",
       "image": "images/a79b4833-7c41-43bb-aa34-ec3e7c44aea7.png"
-    },
-    {
-      "id": "c64ac1d7-028b-49c2-b2d5-fe418ef4554e",
-      "name": "Marcador patinha rosa",
-      "description": "",
-      "price": "5",
-      "category": "Marcador de páginas",
-      "image": "images/c64ac1d7-028b-49c2-b2d5-fe418ef4554e.png"
     }
   ]
 }

@@ -255,6 +255,14 @@
       "price": "10",
       "category": "Brincos 3D",
       "image": "images/f7f09dec-dc64-4932-b6ad-3924eef570c0.png"
+    },
+    {
+      "id": "628b5b11-ccd3-4504-a950-fecff3838528",
+      "name": "Brinco pentagrama",
+      "description": "",
+      "price": "10",
+      "category": "Brincos 3D",
+      "image": "images/628b5b11-ccd3-4504-a950-fecff3838528.png"
     }
   ]
 }

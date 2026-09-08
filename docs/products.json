@@ -247,6 +247,14 @@
       "price": "10",
       "category": "Brincos 3D",
       "image": "images/6272a743-6d76-4dba-afad-c990b19f76e1.png"
+    },
+    {
+      "id": "f7f09dec-dc64-4932-b6ad-3924eef570c0",
+      "name": "Brinco losango azum",
+      "description": "",
+      "price": "10",
+      "category": "Brincos 3D",
+      "image": "images/f7f09dec-dc64-4932-b6ad-3924eef570c0.png"
     }
   ]
 }

@@ -239,6 +239,14 @@
       "price": "10",
       "category": "Brincos 3D",
       "image": "images/9b0f850d-673e-46fe-8d96-7e96735f0ec5.png"
+    },
+    {
+      "id": "6272a743-6d76-4dba-afad-c990b19f76e1",
+      "name": "Brinco árvore da vida",
+      "description": "",
+      "price": "10",
+      "category": "Brincos 3D",
+      "image": "images/6272a743-6d76-4dba-afad-c990b19f76e1.png"
     }
   ]
 }

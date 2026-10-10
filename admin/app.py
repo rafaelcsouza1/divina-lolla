@@ -55,7 +55,9 @@ DEFAULT_CONFIG = {
 }
 
 DEFAULT_CATALOG = {
-    "store": {"name": "Divina Lolla", "description": "Catálogo de produtos", "logo": ""},
+    # storyPhoto: a foto da seção "Nossa história" do site. Vazio = o site usa
+    # a imagem que está fixa no HTML.
+    "store": {"name": "Divina Lolla", "description": "Catálogo de produtos", "logo": "", "storyPhoto": ""},
     "contact": {
         "whatsapp": "",
         "interestTemplate": "Olá! Tenho interesse no produto:\n*{nome}*{preco}\nEle ainda está disponível?",
@@ -356,6 +358,8 @@ def update_store():
         data["store"]["description"] = body["description"]
     if "logo" in body:
         data["store"]["logo"] = body["logo"]
+    if "storyPhoto" in body:
+        data["store"]["storyPhoto"] = body["storyPhoto"]
     if "whatsapp" in body:
         data["contact"]["whatsapp"] = body["whatsapp"]
     if "interestTemplate" in body:
@@ -367,6 +371,33 @@ def update_store():
     save_data(data)
     aviso = _auto_publicar("Atualizar dados da loja")
     return jsonify({"ok": True, "aviso": aviso})
+
+
+@app.route("/api/store/photo", methods=["POST"])
+def update_story_photo():
+    """Troca a foto da seção 'Nossa história' do site."""
+    file = request.files.get("photo")
+    if not file or not file.filename:
+        return jsonify({"ok": False, "error": "Escolha uma imagem."}), 400
+
+    # Nome novo a cada envio: reaproveitar o mesmo arquivo faria o navegador
+    # continuar mostrando a foto antiga, que já está no cache dele.
+    ref = _store_image(f"historia-{uuid.uuid4().hex[:8]}", file)
+    if not ref:
+        return jsonify({
+            "ok": False,
+            "error": "Formato não aceito. Use JPG, PNG, WEBP ou GIF.",
+        }), 400
+
+    data = load_data()
+    anterior = data["store"].get("storyPhoto", "")
+    if anterior and anterior != ref:
+        _remove_image(anterior)
+    data["store"]["storyPhoto"] = ref
+    save_data(data)
+
+    aviso = _auto_publicar("Trocar a foto da nossa história")
+    return jsonify({"ok": True, "photo": ref, "aviso": aviso})
 
 
 @app.route("/api/products", methods=["POST"])

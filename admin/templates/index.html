@@ -367,6 +367,16 @@
     .restart-note.show { display: block; }
     .logo-preview { max-height: 56px; border-radius: 8px; margin-top: 8px; display: none; }
 
+    /* A foto da história é retrato e grande no site: um preview maior deixa
+       ver o enquadramento antes de publicar. */
+    .historia-preview {
+      max-height: 150px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      display: none;
+      border: 1px solid var(--border);
+    }
+
     /* Toast */
     .toast {
       position: fixed;
@@ -604,6 +614,12 @@
             <label>Logo (URL opcional)</label>
             <input type="text" id="store-logo" placeholder="https://... ou images/logo.png">
             <img class="logo-preview" id="logo-preview" alt="logo">
+          </div>
+          <div class="form-group">
+            <label>Foto da “Nossa história”</label>
+            <img class="historia-preview" id="historia-preview" alt="foto da nossa história">
+            <input type="file" id="historia-file" accept="image/*">
+            <div class="field-hint">A foto que aparece ao lado do texto “Feito com amor”. Escolha o arquivo e ela já vai para o site.</div>
           </div>
           <div class="form-group">
             <label>WhatsApp (com DDD e país)</label>
@@ -1017,6 +1033,7 @@ async function loadSettings() {
   document.getElementById('store-whatsapp').value = contact.whatsapp || '';
   document.getElementById('store-msg').value = contact.interestTemplate || '';
   updateLogoPreview();
+  updateHistoriaPreview();
 
   // Config do admin (servidor + fonte de dados)
   try {
@@ -1044,6 +1061,41 @@ function updateLogoPreview() {
   else { img.style.display = 'none'; }
 }
 document.getElementById('store-logo').addEventListener('input', updateLogoPreview);
+
+// ─── Foto da "Nossa história" ────────────────────────────────
+function updateHistoriaPreview() {
+  const img = document.getElementById('historia-preview');
+  // Sem foto própria, mostra a que está fixa no site — é o que o visitante vê.
+  const ref = (storeData.store || {}).storyPhoto || 'images/foto.jpeg';
+  img.src = '/site/' + ref + '?v=' + Date.now();
+  img.style.display = 'block';
+}
+
+document.getElementById('historia-file').onchange = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const fd = new FormData();
+  fd.append('photo', file);
+  showToast('Enviando a foto...', 'success');
+
+  try {
+    const res = await fetch('/api/store/photo', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.ok) {
+      await loadData();
+      updateHistoriaPreview();
+      checkGitStatus();
+      showToast(data.aviso || 'Foto da história atualizada!', data.aviso ? 'error' : 'success');
+    } else {
+      showToast(data.error || 'Erro ao enviar a foto.', 'error');
+    }
+  } catch (err) {
+    showToast('Erro ao enviar: ' + err.message, 'error');
+  }
+  // Limpa para permitir reenviar o mesmo arquivo depois de um erro.
+  e.target.value = '';
+};
 
 function setDataSourceMode(mode) {
   document.getElementById('ds-local').classList.toggle('active', mode === 'local');

@@ -1531,7 +1531,7 @@
     <div class="historia-grid">
       <div class="historia-media reveal from-left">
         <div class="historia-img-frame">
-          <img src="images/foto.jpeg" alt="Janayna - Divina Lolla"
+          <img id="historia-foto" src="images/foto.jpeg" alt="Janayna - Divina Lolla"
                onerror="this.parentElement.innerHTML='<div style=\'width:100%;height:100%;background:linear-gradient(135deg,#fce8ee,#f8bbd0);display:flex;align-items:center;justify-content:center;font-size:5rem\'>👑</div>'">
         </div>
         <div class="historia-deco"></div>
@@ -1815,6 +1815,12 @@
     if (logo) {
       const el = document.getElementById('brand-logo');
       if (el) el.innerHTML = `<img src="${logo}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">`;
+    }
+    // Foto da seção "Nossa história". Sem valor, fica a que está no HTML.
+    const storyPhoto = (store.storyPhoto || '').trim();
+    if (storyPhoto) {
+      const img = document.getElementById('historia-foto');
+      if (img) img.src = storyPhoto;
     }
   }
 

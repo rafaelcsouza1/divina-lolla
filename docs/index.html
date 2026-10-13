@@ -532,6 +532,218 @@
 
     .cat-btn.active::before { opacity: 1; }
 
+    /* ── Seletor de categoria (celular) ──────────────────────────────────
+       Escondido no desktop, onde as pílulas acima cabem e funcionam bem. */
+    .cat-trigger,
+    .cat-sheet,
+    .cat-sheet-backdrop { display: none; }
+
+    .cat-trigger {
+      width: 100%;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 18px;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      color: var(--text);
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 0 2px 14px rgba(168, 57, 90, 0.07);
+      transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+    }
+
+    .cat-trigger:active { border-color: var(--pink-mid); }
+
+    .cat-trigger-icon {
+      flex-shrink: 0;
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: var(--pink-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .cat-trigger-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+
+    .cat-trigger-label {
+      font-size: 0.64rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+    }
+
+    .cat-trigger-value {
+      font-size: 0.97rem;
+      font-weight: 600;
+      color: var(--text);
+      /* Nomes como "Pulseiras de aço inox" não cabem em telas estreitas. */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cat-trigger-count {
+      flex-shrink: 0;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--pink-dark);
+      background: var(--pink-light);
+      padding: 4px 10px;
+      border-radius: 50px;
+    }
+
+    .cat-trigger-chevron {
+      flex-shrink: 0;
+      width: 9px;
+      height: 9px;
+      border-right: 2px solid var(--text-muted);
+      border-bottom: 2px solid var(--text-muted);
+      transform: rotate(45deg) translate(-2px, -2px);
+    }
+
+    .cat-sheet-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(42, 21, 32, 0.45);
+      backdrop-filter: blur(2px);
+      z-index: 400;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s var(--ease);
+    }
+
+    .cat-sheet-backdrop.open { opacity: 1; pointer-events: auto; }
+
+    .cat-sheet {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 401;
+      background: var(--white);
+      border-radius: 26px 26px 0 0;
+      box-shadow: 0 -8px 40px rgba(42, 21, 32, 0.18);
+      /* Nunca passa de 80% da tela: com muitas categorias, a lista rola. */
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(100%);
+      transition: transform 0.32s var(--ease);
+      /* Espaço para a barra inferior do iPhone. */
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    .cat-sheet.open { transform: translateY(0); }
+
+    .cat-sheet-grabber {
+      width: 40px;
+      height: 4px;
+      border-radius: 50px;
+      background: var(--border);
+      margin: 10px auto 2px;
+    }
+
+    .cat-sheet-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cat-sheet-head h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .cat-sheet-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: var(--pink-pale);
+      color: var(--text-soft);
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .cat-sheet-list {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 8px 12px 16px;
+    }
+
+    .cat-option {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      /* 58px de altura: alvo de toque confortável, sem precisar mirar. */
+      padding: 10px 12px;
+      min-height: 58px;
+      border: none;
+      border-radius: 16px;
+      background: transparent;
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.18s var(--ease);
+    }
+
+    .cat-option:active { background: var(--pink-pale); }
+
+    .cat-option-icon {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--pink-pale);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      transition: background 0.18s var(--ease);
+    }
+
+    .cat-option-name {
+      flex: 1;
+      min-width: 0;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .cat-option-count {
+      flex-shrink: 0;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cat-option-check {
+      flex-shrink: 0;
+      width: 20px;
+      opacity: 0;
+      color: var(--pink-dark);
+      font-weight: 700;
+    }
+
+    .cat-option.active { background: var(--pink-light); }
+    .cat-option.active .cat-option-icon { background: var(--white); }
+    .cat-option.active .cat-option-name { color: var(--pink-dark); font-weight: 600; }
+    .cat-option.active .cat-option-check { opacity: 1; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cat-sheet, .cat-sheet-backdrop { transition: none; }
+    }
+
     /* ── Products grid ── */
     .products-grid {
       display: grid;
@@ -1328,22 +1540,12 @@
       .section-heading { margin-bottom: 32px; }
       .section-heading h2 { font-size: 1.9rem; }
 
-      /* Categories — horizontal scroll */
-      .categories-bar {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x mandatory;
-        scrollbar-width: none;
-        justify-content: flex-start;
-        gap: 8px;
-        padding: 4px 2px 16px;
-        margin-bottom: 24px;
-        mask-image: linear-gradient(to right, transparent 0, black 16px, black calc(100% - 16px), transparent 100%);
-        -webkit-mask-image: linear-gradient(to right, transparent 0, black 16px, black calc(100% - 16px), transparent 100%);
-      }
-      .categories-bar::-webkit-scrollbar { display: none; }
-      .cat-btn { scroll-snap-align: start; flex-shrink: 0; }
+      /* No celular as pílulas dão lugar ao seletor em folha: a faixa rolável
+         mostrava duas categorias por vez e escondia o resto. */
+      .categories-bar { display: none; }
+      .cat-trigger { display: flex; margin-bottom: 26px; }
+      .cat-sheet, .cat-sheet-backdrop { display: block; }
+      .cat-sheet { display: flex; }
 
       /* 2-column grid */
       .products-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
@@ -1520,6 +1722,30 @@
     </div>
 
     <div class="categories-bar reveal" id="categories-bar"></div>
+
+    <!-- Seletor de categoria do celular. A faixa rolável acima mostra duas
+         categorias por vez numa tela de telefone, então não dá para descobrir
+         o que existe sem arrastar. Aqui um toque abre a lista inteira. -->
+    <button class="cat-trigger" id="cat-trigger" aria-haspopup="dialog" aria-expanded="false">
+      <span class="cat-trigger-icon" id="cat-trigger-icon">✨</span>
+      <span class="cat-trigger-text">
+        <span class="cat-trigger-label">Categoria</span>
+        <span class="cat-trigger-value" id="cat-trigger-value">Todos</span>
+      </span>
+      <span class="cat-trigger-count" id="cat-trigger-count"></span>
+      <span class="cat-trigger-chevron" aria-hidden="true"></span>
+    </button>
+
+    <div class="cat-sheet-backdrop" id="cat-sheet-backdrop"></div>
+    <div class="cat-sheet" id="cat-sheet" role="dialog" aria-modal="true"
+         aria-label="Escolher categoria" aria-hidden="true">
+      <div class="cat-sheet-grabber" aria-hidden="true"></div>
+      <div class="cat-sheet-head">
+        <h3>Categorias</h3>
+        <button class="cat-sheet-close" id="cat-sheet-close" aria-label="Fechar">✕</button>
+      </div>
+      <div class="cat-sheet-list" id="cat-sheet-list"></div>
+    </div>
 
     <div class="products-grid" id="products-grid">
       <div class="empty-state"><span class="big-icon">💍</span></div>
@@ -1725,7 +1951,12 @@
   // ── Data ──
   const CATEGORY_ICONS = {
     'Pulseiras':'📿','Colares':'📿','Chaveiros':'🔑',
-    'Brincos':'✨','Japamalas':'🧿','Enfeites 3D':'🎀'
+    'Brincos':'✨','Japamalas':'🧿','Enfeites 3D':'🎀',
+    // Categorias em uso hoje. Sem entrada aqui, a categoria cai no 💍 genérico
+    // — o que ficava evidente no seletor novo, onde o ícone aparece grande.
+    'Acessórios de cabelo':'🎀','Amuletos':'🧿','Brincos 3D':'💎',
+    'Brincos divertidos':'🌈','Marcador de páginas':'🔖',
+    'Pulseiras de aço inox':'📿'
   };
   const DEFAULT_ICON = '💍';
 
@@ -1772,7 +2003,76 @@
     const all = btn('all', '✨', 'Todos', true);
     bar.appendChild(all);
     cats.forEach(cat => bar.appendChild(btn(cat, CATEGORY_ICONS[cat] || DEFAULT_ICON, cat, false)));
+    renderCategorySheet(cats);
   }
+
+  // ─── Seletor de categoria do celular ───────────────────────────────────
+  function countFor(cat) {
+    return cat === 'all'
+      ? allProducts.length
+      : allProducts.filter(p => p.category === cat).length;
+  }
+
+  function renderCategorySheet(cats) {
+    const list = document.getElementById('cat-sheet-list');
+    if (!list) return;
+
+    const opcoes = [['all', '✨', 'Todos os produtos']].concat(
+      cats.map(c => [c, CATEGORY_ICONS[c] || DEFAULT_ICON, c])
+    );
+
+    list.innerHTML = opcoes.map(([cat, icon, label]) => `
+      <button class="cat-option${cat === activeCategory ? ' active' : ''}" data-cat="${cat}">
+        <span class="cat-option-icon">${icon}</span>
+        <span class="cat-option-name">${label}</span>
+        <span class="cat-option-count">${countFor(cat)}</span>
+        <span class="cat-option-check" aria-hidden="true">✓</span>
+      </button>`).join('');
+
+    list.querySelectorAll('.cat-option').forEach(op => {
+      op.onclick = () => { setCategory(op.dataset.cat); closeCategorySheet(); };
+    });
+
+    updateCategoryTrigger();
+  }
+
+  function updateCategoryTrigger() {
+    const icon = document.getElementById('cat-trigger-icon');
+    const valor = document.getElementById('cat-trigger-value');
+    const contagem = document.getElementById('cat-trigger-count');
+    if (!icon || !valor || !contagem) return;
+
+    const todos = activeCategory === 'all';
+    icon.textContent = todos ? '✨' : (CATEGORY_ICONS[activeCategory] || DEFAULT_ICON);
+    valor.textContent = todos ? 'Todos os produtos' : activeCategory;
+    const n = countFor(activeCategory);
+    contagem.textContent = n === 1 ? '1 peça' : n + ' peças';
+  }
+
+  function openCategorySheet() {
+    document.getElementById('cat-sheet').classList.add('open');
+    document.getElementById('cat-sheet-backdrop').classList.add('open');
+    document.getElementById('cat-sheet').setAttribute('aria-hidden', 'false');
+    document.getElementById('cat-trigger').setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCategorySheet() {
+    const sheet = document.getElementById('cat-sheet');
+    if (!sheet || !sheet.classList.contains('open')) return;
+    sheet.classList.remove('open');
+    document.getElementById('cat-sheet-backdrop').classList.remove('open');
+    sheet.setAttribute('aria-hidden', 'true');
+    document.getElementById('cat-trigger').setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('cat-trigger').onclick = openCategorySheet;
+  document.getElementById('cat-sheet-close').onclick = closeCategorySheet;
+  document.getElementById('cat-sheet-backdrop').onclick = closeCategorySheet;
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeCategorySheet();
+  });
 
   function btn(cat, icon, label, active) {
     const b = document.createElement('button');
@@ -1794,6 +2094,10 @@
     document.querySelectorAll('.cat-btn').forEach(b =>
       b.classList.toggle('active', b.dataset.cat === cat)
     );
+    document.querySelectorAll('.cat-option').forEach(o =>
+      o.classList.toggle('active', o.dataset.cat === cat)
+    );
+    updateCategoryTrigger();
     renderProducts();
   }
 

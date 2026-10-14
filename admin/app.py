@@ -67,7 +67,18 @@ DEFAULT_CATALOG = {
 }
 
 app = Flask(__name__)
-app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB
+# Fotos de celular passam de 3MB cada, e agora várias sobem de uma vez. O
+# werkzeug grava o excedente em disco, então o número alto não consome memória.
+app.config["MAX_CONTENT_LENGTH"] = 64 * 1024 * 1024  # 64MB
+
+
+@app.errorhandler(413)
+def _arquivo_grande(_e):
+    return jsonify({
+        "ok": False,
+        "error": "As fotos somam mais do que o envio aceita (64 MB). "
+                 "Envie em duas vezes, ou use fotos menores.",
+    }), 413
 
 
 # ─── Senha do painel ──────────────────────────────────────────────────────────
@@ -216,13 +227,30 @@ def _local_path():
     return Path(custom).expanduser() if custom else PRODUCTS_JSON
 
 
+def _normalize_product(p):
+    """Acerta as fotos de um produto.
+
+    Cada peça pode ter várias fotos em "images". Catálogos gravados antes disso
+    trazem só "image", então ela vira a primeira da lista. E "image" continua
+    existindo, sempre apontando para a foto de capa: é o que os cartões do site
+    leem, e o que mantém catálogos antigos funcionando sem conversão.
+    """
+    fotos = p.get("images")
+    fotos = [f for f in fotos if f] if isinstance(fotos, list) else []
+    if not fotos and p.get("image"):
+        fotos = [p["image"]]
+    p["images"] = fotos
+    p["image"] = fotos[0] if fotos else ""
+    return p
+
+
 def _normalize(data):
     """Garante que store/contact/categories/products existam com defaults."""
     data = data or {}
     data["store"] = _deep_merge(DEFAULT_CATALOG["store"], data.get("store"))
     data["contact"] = _deep_merge(DEFAULT_CATALOG["contact"], data.get("contact"))
     data.setdefault("categories", [])
-    data.setdefault("products", [])
+    data["products"] = [_normalize_product(p) for p in (data.get("products") or [])]
     return data
 
 
@@ -324,6 +352,31 @@ def _store_image(product_id, file):
     return f"images/{filename}"
 
 
+def _store_images(product_id, files):
+    """Grava várias fotos de uma vez e devolve as que deram certo.
+
+    Cada arquivo ganha um sufixo próprio: sem ele, a segunda foto sobrescreveria
+    a primeira, já que o nome vinha só do id do produto.
+    """
+    refs = []
+    for f in files:
+        if not f or not f.filename:
+            continue
+        ref = _store_image(f"{product_id}-{uuid.uuid4().hex[:8]}", f)
+        if ref:
+            refs.append(ref)
+    return refs
+
+
+def _uploaded_photos(product_id):
+    """Fotos enviadas no formulário, aceitando o campo antigo de foto única."""
+    arquivos = list(request.files.getlist("images"))
+    unica = request.files.get("image")
+    if unica and unica.filename:
+        arquivos.append(unica)
+    return _store_images(product_id, arquivos)
+
+
 def _remove_image(image_ref):
     if not image_ref or image_ref.startswith("data:"):
         return
@@ -410,13 +463,11 @@ def add_product():
         "price": request.form.get("price", "").strip(),
         "category": request.form.get("category", "").strip(),
         "image": "",
+        "images": [],
     }
 
-    file = request.files.get("image")
-    if file and file.filename:
-        ref = _store_image(product["id"], file)
-        if ref:
-            product["image"] = ref
+    product["images"] = _uploaded_photos(product["id"])
+    product["image"] = product["images"][0] if product["images"] else ""
 
     data["products"].append(product)
 
@@ -441,12 +492,43 @@ def update_product(product_id):
     product["price"] = request.form.get("price", product["price"]).strip()
     product["category"] = request.form.get("category", product["category"]).strip()
 
-    file = request.files.get("image")
-    if file and file.filename:
-        ref = _store_image(product_id, file)
-        if ref:
-            _remove_image(product.get("image"))
-            product["image"] = ref
+    # A tela manda, em imageOrder, as fotos que ficam e em que ordem. O que
+    # sumir dessa lista é apagado do disco. Assim remover, reordenar e
+    # acrescentar acontecem numa gravação só, sem rota separada para cada caso.
+    atuais = product.get("images") or []
+    novas = _uploaded_photos(product_id)
+
+    ordem = request.form.get("imageOrder")
+    if ordem is None:
+        final = atuais + novas
+    else:
+        try:
+            pedidas = json.loads(ordem)
+        except (ValueError, TypeError):
+            pedidas = atuais
+
+        # A tela não conhece o nome das fotos que estão subindo agora, então
+        # marca o lugar delas com __nova__N, na ordem em que foram anexadas.
+        # É isso que permite uma foto recém-escolhida já entrar como capa.
+        final = []
+        for item in pedidas:
+            if isinstance(item, str) and item.startswith("__nova__"):
+                try:
+                    i = int(item[len("__nova__"):])
+                except ValueError:
+                    continue
+                if 0 <= i < len(novas) and novas[i] not in final:
+                    final.append(novas[i])
+            elif item in atuais and item not in final:
+                final.append(item)
+
+        final += [r for r in novas if r not in final]
+        for ref in atuais:
+            if ref not in final:
+                _remove_image(ref)
+
+    product["images"] = final
+    product["image"] = final[0] if final else ""
 
     data["categories"] = sorted(set(
         p["category"] for p in data["products"] if p.get("category")
@@ -464,7 +546,8 @@ def delete_product(product_id):
     if not product:
         return jsonify({"error": "Produto não encontrado"}), 404
 
-    _remove_image(product.get("image"))
+    for ref in product.get("images") or [product.get("image")]:
+        _remove_image(ref)
 
     data["products"] = [p for p in data["products"] if p["id"] != product_id]
     data["categories"] = sorted(set(

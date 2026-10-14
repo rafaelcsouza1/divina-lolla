@@ -318,6 +318,69 @@
     .image-upload-area .placeholder-text { color: var(--text-muted); font-size: 0.88rem; }
     .image-upload-area .icon { font-size: 2rem; margin-bottom: 6px; }
 
+    /* ── Grade de fotos do produto ── */
+    .fotos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .fotos-grid:empty { display: none; }
+
+    .foto-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid var(--border);
+      cursor: pointer;
+      background: var(--bg);
+    }
+    .foto-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* A capa é a que vai para a vitrine: precisa se distinguir de relance. */
+    .foto-item.capa { border-color: var(--primary); }
+    .foto-item .capa-tag {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 3px;
+    }
+
+    .foto-item .remover {
+      position: absolute;
+      top: 4px; right: 4px;
+      width: 24px; height: 24px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 0.8rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .foto-item .remover:hover { background: var(--danger); }
+
+    .foto-item .nova-tag {
+      position: absolute;
+      top: 4px; left: 4px;
+      background: var(--success);
+      color: #fff;
+      font-size: 0.58rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 50px;
+    }
+
     .modal-footer {
       padding: 0 24px 24px;
       display: flex;
@@ -740,16 +803,17 @@
         </select>
       </div>
       <div class="form-group">
-        <label>Foto</label>
+        <label>Fotos</label>
+        <div class="fotos-grid" id="fotos-grid"></div>
         <div class="image-upload-area" id="upload-area" onclick="document.getElementById('field-image').click()">
-          <input type="file" id="field-image" accept="image/*">
-          <img class="preview" id="image-preview">
-          <div class="placeholder-text" id="upload-placeholder">
+          <input type="file" id="field-image" accept="image/*" multiple>
+          <div class="placeholder-text">
             <div class="icon">&#128247;</div>
-            <div>Clique para selecionar uma imagem</div>
-            <div style="font-size:0.78rem;margin-top:4px;color:#aaa">JPG, PNG, WEBP até 16MB</div>
+            <div id="upload-label">Clique para escolher as fotos</div>
+            <div style="font-size:0.78rem;margin-top:4px;color:#aaa">JPG, PNG, WEBP &middot; pode escolher várias de uma vez</div>
           </div>
         </div>
+        <div class="field-hint">A primeira é a capa, que aparece na vitrine. Toque em outra para promovê-la.</div>
       </div>
     </div>
     <div class="modal-footer">
@@ -867,18 +931,13 @@ function openProductModal(product = null) {
   sel.innerHTML = '<option value="">Sem categoria</option>' +
     storeData.categories.map(c => `<option value="${c}" ${product && product.category === c ? 'selected' : ''}>${c}</option>`).join('');
 
-  // Image preview
-  const preview = document.getElementById('image-preview');
-  const placeholder = document.getElementById('upload-placeholder');
-  if (product && product.image) {
-    preview.src = '/site/' + product.image;
-    preview.style.display = 'block';
-    placeholder.style.display = 'none';
-  } else {
-    preview.style.display = 'none';
-    placeholder.style.display = 'block';
-  }
+  // Fotos: as já salvas entram como referência; as novas chegam pelo input.
+  fotos.forEach(f => { if (f.nova && f.url.startsWith('blob:')) URL.revokeObjectURL(f.url); });
+  fotos = ((product && product.images) || []).map(ref => ({
+    nova: false, ref, url: '/site/' + ref
+  }));
   document.getElementById('field-image').value = '';
+  renderFotos();
 
   document.getElementById('product-modal').classList.add('open');
   setTimeout(() => document.getElementById('field-name').focus(), 100);
@@ -888,17 +947,54 @@ function closeProductModal() {
   document.getElementById('product-modal').classList.remove('open');
 }
 
+// ─── Fotos do produto ────────────────────────────────────────
+// Uma lista só, misturando o que já está salvo e o que acabou de ser escolhido.
+// Guardar os dois juntos é o que permite promover a capa antes de salvar.
+let fotos = [];
+
+function renderFotos() {
+  const grid = document.getElementById('fotos-grid');
+  grid.innerHTML = fotos.map((f, i) => `
+    <div class="foto-item${i === 0 ? ' capa' : ''}" data-i="${i}"
+         title="${i === 0 ? 'Esta é a capa' : 'Tornar capa'}">
+      <img src="${f.url}" alt="">
+      ${f.nova ? '<span class="nova-tag">nova</span>' : ''}
+      <button type="button" class="remover" data-rem="${i}" title="Remover">&times;</button>
+      ${i === 0 ? '<span class="capa-tag">Capa</span>' : ''}
+    </div>`).join('');
+
+  grid.querySelectorAll('.foto-item').forEach(el => {
+    el.onclick = ev => {
+      if (ev.target.closest('.remover')) return;
+      const i = +el.dataset.i;
+      if (i === 0) return;
+      fotos.unshift(fotos.splice(i, 1)[0]);
+      renderFotos();
+    };
+  });
+
+  grid.querySelectorAll('.remover').forEach(b => {
+    b.onclick = ev => {
+      ev.stopPropagation();
+      const f = fotos[+b.dataset.rem];
+      // Libera a URL temporária para o navegador não segurar o arquivo.
+      if (f.nova && f.url.startsWith('blob:')) URL.revokeObjectURL(f.url);
+      fotos.splice(+b.dataset.rem, 1);
+      renderFotos();
+    };
+  });
+
+  document.getElementById('upload-label').textContent =
+    fotos.length ? 'Adicionar mais fotos' : 'Clique para escolher as fotos';
+}
+
 document.getElementById('field-image').addEventListener('change', e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const preview = document.getElementById('image-preview');
-    preview.src = ev.target.result;
-    preview.style.display = 'block';
-    document.getElementById('upload-placeholder').style.display = 'none';
-  };
-  reader.readAsDataURL(file);
+  Array.from(e.target.files).forEach(file => {
+    fotos.push({ nova: true, file, url: URL.createObjectURL(file) });
+  });
+  // Limpa para que escolher o mesmo arquivo de novo volte a disparar o evento.
+  e.target.value = '';
+  renderFotos();
 });
 
 document.getElementById('btn-save-product').onclick = async () => {
@@ -910,8 +1006,12 @@ document.getElementById('btn-save-product').onclick = async () => {
   formData.append('description', document.getElementById('field-description').value.trim());
   formData.append('price', document.getElementById('field-price').value.trim());
   formData.append('category', document.getElementById('field-category').value);
-  const imageFile = document.getElementById('field-image').files[0];
-  if (imageFile) formData.append('image', imageFile);
+  // A ordem vai com marcadores para as fotos que ainda não existem no servidor,
+  // na mesma sequência em que são anexadas abaixo.
+  let nova = 0;
+  const ordem = fotos.map(f => f.nova ? `__nova__${nova++}` : f.ref);
+  fotos.filter(f => f.nova).forEach(f => formData.append('images', f.file));
+  formData.append('imageOrder', JSON.stringify(ordem));
 
   const btn = document.getElementById('btn-save-product');
   btn.disabled = true;

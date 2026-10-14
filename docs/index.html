@@ -1040,6 +1040,152 @@
       font-size: 6rem;
     }
 
+    /* ── Galeria do produto ─────────────────────────────────────────────── */
+    .modal-img-wrap { cursor: zoom-in; }
+
+    .gal-contador {
+      position: absolute;
+      right: 12px; bottom: 12px;
+      background: rgba(42, 21, 32, 0.6);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 50px;
+      font-variant-numeric: tabular-nums;
+      pointer-events: none;
+    }
+
+    .gal-lupa {
+      position: absolute;
+      left: 12px; bottom: 12px;
+      background: rgba(42, 21, 32, 0.6);
+      color: #fff;
+      font-size: 0.72rem;
+      padding: 4px 10px;
+      border-radius: 50px;
+      pointer-events: none;
+    }
+
+    .gal-seta {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 38px; height: 38px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.85);
+      color: var(--text);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 10px rgba(42, 21, 32, 0.18);
+    }
+    .gal-seta.ant { left: 10px; }
+    .gal-seta.prox { right: 10px; }
+
+    .gal-thumbs {
+      display: flex;
+      gap: 8px;
+      padding: 12px 36px 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .gal-thumbs::-webkit-scrollbar { display: none; }
+
+    .gal-thumb {
+      flex-shrink: 0;
+      width: 58px; height: 58px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      padding: 0;
+      background: var(--pink-pale);
+      cursor: pointer;
+    }
+    .gal-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .gal-thumb.ativa { border-color: var(--pink); }
+
+    /* ── Zoom em tela cheia ─────────────────────────────────────────────── */
+    .zoom-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 600;
+      background: #15090f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s var(--ease);
+    }
+    .zoom-overlay.open { opacity: 1; pointer-events: auto; }
+
+    .zoom-stage {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* O navegador não deve rolar nem dar o seu próprio zoom aqui: os gestos
+         são tratados pela página, senão os dois disputam o mesmo toque. */
+      touch-action: none;
+    }
+
+    .zoom-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      transform-origin: center center;
+      will-change: transform;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    .zoom-img.animar { transition: transform 0.25s var(--ease); }
+
+    .zoom-close {
+      position: absolute;
+      top: calc(14px + env(safe-area-inset-top, 0px));
+      right: 14px;
+      z-index: 2;
+      width: 42px; height: 42px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
+      font-size: 1.05rem;
+      cursor: pointer;
+    }
+
+    .zoom-contador {
+      position: absolute;
+      top: calc(22px + env(safe-area-inset-top, 0px));
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 0.8rem;
+      font-variant-numeric: tabular-nums;
+      pointer-events: none;
+    }
+
+    .zoom-dica {
+      position: absolute;
+      bottom: calc(26px + env(safe-area-inset-bottom, 0px));
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.78rem;
+      text-align: center;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .zoom-dica.sumir { opacity: 0; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .zoom-overlay, .zoom-img.animar { transition: none; }
+    }
+
     .modal-body { padding: 32px 36px 40px; }
     .modal-cat { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--pink); font-weight: 600; margin-bottom: 10px; }
 
@@ -1817,7 +1963,18 @@
   </div>
 </div>
 
-<script>
+  <!-- Zoom em tela cheia das fotos do produto -->
+  <div class="zoom-overlay" id="zoom-overlay" role="dialog" aria-modal="true"
+       aria-label="Foto ampliada" aria-hidden="true">
+    <button class="zoom-close" id="zoom-fechar" aria-label="Fechar">&#10005;</button>
+    <span class="zoom-contador" id="zoom-contador"></span>
+    <div class="zoom-stage" id="zoom-stage">
+      <img class="zoom-img" id="zoom-img" alt="">
+    </div>
+    <span class="zoom-dica" id="zoom-dica">Toque duas vezes ou use dois dedos para ampliar</span>
+  </div>
+
+  <script>
   // ── Cursor glow (desktop only) ──
   const glow = document.getElementById('cursor-glow');
   if (window.matchMedia('(pointer: fine)').matches) {
@@ -2227,13 +2384,8 @@
     if (!p) return;
     const icon = CATEGORY_ICONS[p.category] || DEFAULT_ICON;
     document.getElementById('modal-content').innerHTML = `
-      <div class="modal-img-wrap">
-        ${p.image
-          ? (p.image.startsWith('data:image/svg')
-              ? `<div class="modal-img svg-bg" style="background-image:url('${p.image}')"></div>`
-              : `<img class="modal-img" src="${p.image}" alt="${p.name}">`)
-          : `<div class="modal-img-placeholder">${icon}</div>`}
-      </div>
+      <div class="modal-img-wrap" id="gal-wrap"></div>
+      <div class="gal-thumbs" id="gal-thumbs"></div>
       <div class="modal-body">
         ${p.category ? `<div class="modal-cat">${p.category}</div>` : ''}
         <div class="modal-name">${p.name}</div>
@@ -2245,6 +2397,66 @@
       </div>`;
     document.getElementById('modal-overlay').classList.add('open');
     document.body.style.overflow = 'hidden';
+    montarGaleria(p, icon);
+  }
+
+  // ─── Galeria do produto ────────────────────────────────────────────────
+  let galFotos = [], galIdx = 0, galNome = '', galIcone = '';
+
+  function montarGaleria(p, icon) {
+    galFotos = (p.images && p.images.length) ? p.images : (p.image ? [p.image] : []);
+    galIdx = 0;
+    galNome = p.name || '';
+    galIcone = icon;
+    desenharGaleria();
+  }
+
+  function desenharGaleria() {
+    const wrap = document.getElementById('gal-wrap');
+    const thumbs = document.getElementById('gal-thumbs');
+    if (!wrap) return;
+
+    if (!galFotos.length) {
+      wrap.innerHTML = `<div class="modal-img-placeholder">${galIcone}</div>`;
+      wrap.style.cursor = 'default';
+      thumbs.innerHTML = '';
+      return;
+    }
+
+    const src = galFotos[galIdx];
+    const ehSvg = src.startsWith('data:image/svg');
+    wrap.style.cursor = 'zoom-in';
+    wrap.innerHTML = `
+      ${ehSvg
+        ? `<div class="modal-img svg-bg" style="background-image:url('${src}')"></div>`
+        : `<img class="modal-img" src="${src}" alt="${galNome}">`}
+      ${galFotos.length > 1 ? `
+        <button class="gal-seta ant" data-passo="-1" aria-label="Foto anterior">&#10094;</button>
+        <button class="gal-seta prox" data-passo="1" aria-label="Próxima foto">&#10095;</button>
+        <span class="gal-contador">${galIdx + 1}/${galFotos.length}</span>` : ''}
+      <span class="gal-lupa">&#128269; ampliar</span>`;
+
+    wrap.onclick = e => {
+      const seta = e.target.closest('.gal-seta');
+      if (seta) { passarFoto(+seta.dataset.passo); return; }
+      abrirZoom(galIdx);
+    };
+
+    thumbs.innerHTML = galFotos.length > 1
+      ? galFotos.map((f, i) => `
+          <button class="gal-thumb${i === galIdx ? ' ativa' : ''}" data-i="${i}">
+            <img src="${f}" alt="">
+          </button>`).join('')
+      : '';
+    thumbs.querySelectorAll('.gal-thumb').forEach(b => {
+      b.onclick = () => { galIdx = +b.dataset.i; desenharGaleria(); };
+    });
+  }
+
+  function passarFoto(passo) {
+    if (galFotos.length < 2) return;
+    galIdx = (galIdx + passo + galFotos.length) % galFotos.length;
+    desenharGaleria();
   }
 
   document.getElementById('modal-close').onclick = closeModal;
@@ -2258,11 +2470,145 @@
     document.body.style.overflow = '';
   }
 
+  // ─── Zoom em tela cheia ────────────────────────────────────────────────
+  // Os gestos são tratados aqui em vez de deixar com o navegador: dentro de um
+  // overlay fixo, o zoom nativo ampliaria a página inteira, não a foto.
+  const ZOOM_MAX = 4;
+  let zEscala = 1, zx = 0, zy = 0;
+  let zPointers = new Map(), zDist0 = 0, zEscala0 = 1;
+  let zArrastou = false, zx0 = 0, zy0 = 0, zpx = 0, zpy = 0;
+  let zUltimoToque = 0;
+
+  const zOverlay = () => document.getElementById('zoom-overlay');
+  const zImg = () => document.getElementById('zoom-img');
+
+  function zAplicar(animar) {
+    const img = zImg();
+    img.classList.toggle('animar', !!animar);
+    img.style.transform = `translate(${zx}px, ${zy}px) scale(${zEscala})`;
+  }
+
+  function zLimitar() {
+    // Sem limite, a foto ampliada escapa da tela e some.
+    const img = zImg();
+    const r = img.getBoundingClientRect();
+    const folgaX = Math.max(0, (r.width - window.innerWidth) / 2);
+    const folgaY = Math.max(0, (r.height - window.innerHeight) / 2);
+    zx = Math.min(folgaX, Math.max(-folgaX, zx));
+    zy = Math.min(folgaY, Math.max(-folgaY, zy));
+  }
+
+  function zDefinirEscala(nova, animar) {
+    zEscala = Math.min(ZOOM_MAX, Math.max(1, nova));
+    if (zEscala === 1) { zx = 0; zy = 0; }
+    else zLimitar();
+    zAplicar(animar);
+  }
+
+  function abrirZoom(i) {
+    if (!galFotos.length) return;
+    zoomIr(i);
+    zOverlay().classList.add('open');
+    zOverlay().setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    const dica = document.getElementById('zoom-dica');
+    dica.classList.remove('sumir');
+    setTimeout(() => dica.classList.add('sumir'), 2600);
+  }
+
+  function zoomIr(i) {
+    galIdx = (i + galFotos.length) % galFotos.length;
+    zImg().src = galFotos[galIdx];
+    zImg().alt = galNome;
+    document.getElementById('zoom-contador').textContent =
+      galFotos.length > 1 ? `${galIdx + 1} / ${galFotos.length}` : '';
+    zEscala = 1; zx = 0; zy = 0;
+    zAplicar(false);
+  }
+
+  function fecharZoom() {
+    zOverlay().classList.remove('open');
+    zOverlay().setAttribute('aria-hidden', 'true');
+    zPointers.clear();
+    // O modal do produto continua aberto atrás, então a rolagem segue travada.
+    desenharGaleria();
+  }
+
+  function zDistancia() {
+    const [a, b] = [...zPointers.values()];
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  }
+
+  function ligarZoom() {
+    const palco = document.getElementById('zoom-stage');
+
+    palco.addEventListener('pointerdown', e => {
+      palco.setPointerCapture(e.pointerId);
+      zPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (zPointers.size === 2) { zDist0 = zDistancia(); zEscala0 = zEscala; }
+      else { zArrastou = false; zx0 = e.clientX; zy0 = e.clientY; zpx = zx; zpy = zy; }
+    });
+
+    palco.addEventListener('pointermove', e => {
+      if (!zPointers.has(e.pointerId)) return;
+      zPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+      if (zPointers.size === 2) {
+        if (zDist0 > 0) zDefinirEscala(zEscala0 * (zDistancia() / zDist0), false);
+        return;
+      }
+      const dx = e.clientX - zx0, dy = e.clientY - zy0;
+      if (Math.abs(dx) > 6 || Math.abs(dy) > 6) zArrastou = true;
+      if (zEscala > 1) { zx = zpx + dx; zy = zpy + dy; zLimitar(); zAplicar(false); }
+    });
+
+    const soltar = e => {
+      zPointers.delete(e.pointerId);
+      if (zPointers.size > 0) return;
+
+      const dx = e.clientX - zx0;
+      // Deslizar só troca de foto quando a imagem está no tamanho normal;
+      // ampliada, o mesmo gesto serve para mover a foto.
+      if (zEscala === 1 && zArrastou && Math.abs(dx) > 60 && galFotos.length > 1) {
+        zoomIr(galIdx + (dx < 0 ? 1 : -1));
+        return;
+      }
+      if (zArrastou) return;
+
+      const agora = Date.now();
+      if (agora - zUltimoToque < 300) {
+        zDefinirEscala(zEscala > 1 ? 1 : 2.5, true);
+        zUltimoToque = 0;
+      } else {
+        zUltimoToque = agora;
+      }
+    };
+
+    palco.addEventListener('pointerup', soltar);
+    palco.addEventListener('pointercancel', e => zPointers.delete(e.pointerId));
+
+    // Roda do mouse amplia no desktop.
+    palco.addEventListener('wheel', e => {
+      e.preventDefault();
+      zDefinirEscala(zEscala * (e.deltaY < 0 ? 1.15 : 0.87), false);
+    }, { passive: false });
+
+    document.getElementById('zoom-fechar').onclick = fecharZoom;
+
+    document.addEventListener('keydown', e => {
+      if (!zOverlay().classList.contains('open')) return;
+      if (e.key === 'Escape') { e.stopPropagation(); fecharZoom(); }
+      if (e.key === 'ArrowRight') zoomIr(galIdx + 1);
+      if (e.key === 'ArrowLeft') zoomIr(galIdx - 1);
+    }, true);
+  }
+
   document.getElementById('header-search').addEventListener('input', e => {
     searchTerm = e.target.value.toLowerCase().trim();
     renderProducts();
   });
 
+  ligarZoom();
   loadData();
 </script>
 </body>

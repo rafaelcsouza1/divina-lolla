@@ -14,9 +14,9 @@
     "Amuletos",
     "Brincos 3D",
     "Brincos divertidos",
+    "Conjuntos",
     "Marcador de páginas",
-    "Pulseiras de aço inox",
-    "Conjuntos"
+    "Pulseiras de aço inox"
   ],
   "products": [
     {
@@ -449,7 +449,7 @@
       "price": "5"
     },
     {
-      "category": "",
+      "category": "Conjuntos",
       "description": "✨ Detalhes do Produto:\r\n\r\n· Pulseira: Fio de elástico de alta durabilidade (super confortável).\r\n· Brinco: Anzol na cor prata níquel, leve e delicado.\r\n· Pedra: Malaquita natural de 8mm.",
       "id": "40bf19fd-f4f4-47f0-a116-c46b4eac00b7",
       "image": "images/40bf19fd-f4f4-47f0-a116-c46b4eac00b7-128d1ddc.png",

@@ -15,7 +15,8 @@
     "Brincos 3D",
     "Brincos divertidos",
     "Marcador de páginas",
-    "Pulseiras de aço inox"
+    "Pulseiras de aço inox",
+    "Conjuntos"
   ],
   "products": [
     {
@@ -23,440 +24,440 @@
       "description": "",
       "id": "a42fdd50-c0e7-4959-85cc-c0c93aafa589",
       "image": "images/a42fdd50-c0e7-4959-85cc-c0c93aafa589.png",
-      "name": "Brinco urso verde",
-      "price": "10",
       "images": [
         "images/a42fdd50-c0e7-4959-85cc-c0c93aafa589.png"
-      ]
+      ],
+      "name": "Brinco urso verde",
+      "price": "10"
     },
     {
       "category": "Brincos divertidos",
       "description": "",
       "id": "7a16f953-3726-4c46-a2d3-0fa0cb290bc7",
       "image": "images/7a16f953-3726-4c46-a2d3-0fa0cb290bc7.png",
-      "name": "Brinco gato roxo",
-      "price": "10",
       "images": [
         "images/7a16f953-3726-4c46-a2d3-0fa0cb290bc7.png"
-      ]
+      ],
+      "name": "Brinco gato roxo",
+      "price": "10"
     },
     {
       "category": "Brincos divertidos",
       "description": "",
       "id": "552e987d-b6d5-4f26-aee2-fddbe7e0f1c5",
       "image": "images/552e987d-b6d5-4f26-aee2-fddbe7e0f1c5.png",
-      "name": "Brinco coelho",
-      "price": "10",
       "images": [
         "images/552e987d-b6d5-4f26-aee2-fddbe7e0f1c5.png"
-      ]
+      ],
+      "name": "Brinco coelho",
+      "price": "10"
     },
     {
       "category": "Brincos divertidos",
       "description": "",
       "id": "f212d2fe-dc35-4314-bb4d-e0ee65979a1d",
       "image": "images/f212d2fe-dc35-4314-bb4d-e0ee65979a1d.png",
-      "name": "Brinco urso lilás",
-      "price": "10",
       "images": [
         "images/f212d2fe-dc35-4314-bb4d-e0ee65979a1d.png"
-      ]
+      ],
+      "name": "Brinco urso lilás",
+      "price": "10"
     },
     {
       "category": "Brincos divertidos",
       "description": "",
       "id": "c059c129-b84a-4e3e-99a0-19313f64871d",
       "image": "images/c059c129-b84a-4e3e-99a0-19313f64871d.png",
-      "name": "Brinco smile",
-      "price": "10",
       "images": [
         "images/c059c129-b84a-4e3e-99a0-19313f64871d.png"
-      ]
+      ],
+      "name": "Brinco smile",
+      "price": "10"
     },
     {
       "category": "Brincos divertidos",
       "description": "",
       "id": "0ea71e9c-5b3a-4265-ba04-9df8e47f9434",
       "image": "images/0ea71e9c-5b3a-4265-ba04-9df8e47f9434.png",
-      "name": "Brinco guaraná",
-      "price": "10",
       "images": [
         "images/0ea71e9c-5b3a-4265-ba04-9df8e47f9434.png"
-      ]
+      ],
+      "name": "Brinco guaraná",
+      "price": "10"
     },
     {
       "category": "Brincos divertidos",
       "description": "",
       "id": "552e920b-3e44-465e-a491-f0e248636000",
       "image": "images/552e920b-3e44-465e-a491-f0e248636000.png",
-      "name": "Brinco sukita",
-      "price": "10",
       "images": [
         "images/552e920b-3e44-465e-a491-f0e248636000.png"
-      ]
+      ],
+      "name": "Brinco sukita",
+      "price": "10"
     },
     {
       "category": "Brincos divertidos",
       "description": "",
       "id": "e92742b4-a1f2-4016-815f-c7b916a23927",
       "image": "images/e92742b4-a1f2-4016-815f-c7b916a23927.png",
-      "name": "Brinco coca",
-      "price": "10",
       "images": [
         "images/e92742b4-a1f2-4016-815f-c7b916a23927.png"
-      ]
+      ],
+      "name": "Brinco coca",
+      "price": "10"
     },
     {
       "category": "Brincos divertidos",
       "description": "",
       "id": "428b90cb-e6a3-43ef-8e11-8bf112ed5ec8",
       "image": "images/428b90cb-e6a3-43ef-8e11-8bf112ed5ec8.png",
-      "name": "Brinco sapo",
-      "price": "10",
       "images": [
         "images/428b90cb-e6a3-43ef-8e11-8bf112ed5ec8.png"
-      ]
+      ],
+      "name": "Brinco sapo",
+      "price": "10"
     },
     {
       "category": "Acessórios de cabelo",
       "description": "Kit",
       "id": "f6db0f00-e023-4379-a5a3-77c382684b92",
       "image": "images/f6db0f00-e023-4379-a5a3-77c382684b92.png",
-      "name": "Presilha urso",
-      "price": "10",
       "images": [
         "images/f6db0f00-e023-4379-a5a3-77c382684b92.png"
-      ]
+      ],
+      "name": "Presilha urso",
+      "price": "10"
     },
     {
       "category": "Acessórios de cabelo",
       "description": "",
       "id": "f93bdfaa-1b15-44aa-9298-94438e971524",
       "image": "images/f93bdfaa-1b15-44aa-9298-94438e971524.png",
-      "name": "Presilha coelhinho cherry",
-      "price": "10",
       "images": [
         "images/f93bdfaa-1b15-44aa-9298-94438e971524.png"
-      ]
+      ],
+      "name": "Presilha coelhinho cherry",
+      "price": "10"
     },
     {
       "category": "Acessórios de cabelo",
       "description": "",
       "id": "4e8ad137-7518-43f4-b62f-0b45d6e35695",
       "image": "images/4e8ad137-7518-43f4-b62f-0b45d6e35695.png",
-      "name": "Mini piranha cereja",
-      "price": "10",
       "images": [
         "images/4e8ad137-7518-43f4-b62f-0b45d6e35695.png"
-      ]
+      ],
+      "name": "Mini piranha cereja",
+      "price": "10"
     },
     {
       "category": "Amuletos",
       "description": "4,5cm altura",
       "id": "88efd832-b140-4087-be35-4439da3dcee5",
       "image": "images/88efd832-b140-4087-be35-4439da3dcee5.png",
-      "name": "Amuleto prosperidade",
-      "price": "18",
       "images": [
         "images/88efd832-b140-4087-be35-4439da3dcee5.png"
-      ]
+      ],
+      "name": "Amuleto prosperidade",
+      "price": "18"
     },
     {
       "category": "Amuletos",
       "description": "4,5cm altura",
       "id": "cdecbeb8-3511-4015-9765-1621c5749385",
       "image": "images/cdecbeb8-3511-4015-9765-1621c5749385.png",
-      "name": "Amuleto de proteção e boas energias",
-      "price": "18",
       "images": [
         "images/cdecbeb8-3511-4015-9765-1621c5749385.png"
-      ]
+      ],
+      "name": "Amuleto de proteção e boas energias",
+      "price": "18"
     },
     {
       "category": "Pulseiras de aço inox",
       "description": "",
       "id": "679e58ea-f8ad-42e1-9482-4414b7f43fc7",
       "image": "images/679e58ea-f8ad-42e1-9482-4414b7f43fc7.png",
-      "name": "Pulseira coração vazado",
-      "price": "20",
       "images": [
         "images/679e58ea-f8ad-42e1-9482-4414b7f43fc7.png"
-      ]
+      ],
+      "name": "Pulseira coração vazado",
+      "price": "20"
     },
     {
       "category": "Pulseiras de aço inox",
       "description": "",
       "id": "61fb8b03-240d-4f8d-9de8-03facb58a5ca",
       "image": "images/61fb8b03-240d-4f8d-9de8-03facb58a5ca.png",
-      "name": "Pulseira coração",
-      "price": "20",
       "images": [
         "images/61fb8b03-240d-4f8d-9de8-03facb58a5ca.png"
-      ]
+      ],
+      "name": "Pulseira coração",
+      "price": "20"
     },
     {
       "category": "Pulseiras de aço inox",
       "description": "",
       "id": "3c4462d7-83e6-4a9a-a47f-14658d55cb67",
       "image": "images/3c4462d7-83e6-4a9a-a47f-14658d55cb67.png",
-      "name": "Pulseira trevo",
-      "price": "20",
       "images": [
         "images/3c4462d7-83e6-4a9a-a47f-14658d55cb67.png"
-      ]
+      ],
+      "name": "Pulseira trevo",
+      "price": "20"
     },
     {
       "category": "Pulseiras de aço inox",
       "description": "",
       "id": "892530d2-8b1b-454c-beea-c673556f1eb4",
       "image": "images/892530d2-8b1b-454c-beea-c673556f1eb4.png",
-      "name": "Pulseira coroa",
-      "price": "20",
       "images": [
         "images/892530d2-8b1b-454c-beea-c673556f1eb4.png"
-      ]
+      ],
+      "name": "Pulseira coroa",
+      "price": "20"
     },
     {
       "category": "Pulseiras de aço inox",
       "description": "",
       "id": "a675fce8-d02a-43b3-bfaa-99a0550caf60",
       "image": "images/a675fce8-d02a-43b3-bfaa-99a0550caf60.png",
-      "name": "Pulseira estrela",
-      "price": "20",
       "images": [
         "images/a675fce8-d02a-43b3-bfaa-99a0550caf60.png"
-      ]
+      ],
+      "name": "Pulseira estrela",
+      "price": "20"
     },
     {
       "category": "Pulseiras de aço inox",
       "description": "",
       "id": "a01dc26a-7fc8-4a7b-92be-66465ad43952",
       "image": "images/a01dc26a-7fc8-4a7b-92be-66465ad43952.png",
-      "name": "Pulseira Butterfly",
-      "price": "20",
       "images": [
         "images/a01dc26a-7fc8-4a7b-92be-66465ad43952.png"
-      ]
+      ],
+      "name": "Pulseira Butterfly",
+      "price": "20"
     },
     {
       "category": "Pulseiras de aço inox",
       "description": "",
       "id": "0bb7ca7f-c644-4628-ac86-ff9693e1681d",
       "image": "images/0bb7ca7f-c644-4628-ac86-ff9693e1681d.png",
-      "name": "Pulseira cereja",
-      "price": "20",
       "images": [
         "images/0bb7ca7f-c644-4628-ac86-ff9693e1681d.png"
-      ]
+      ],
+      "name": "Pulseira cereja",
+      "price": "20"
     },
     {
       "category": "Acessórios de cabelo",
       "description": "",
       "id": "8ae3084a-ed5f-4a81-b1f0-8b7a50da96e2",
       "image": "images/8ae3084a-ed5f-4a81-b1f0-8b7a50da96e2.png",
-      "name": "Kit presilhas oncinha",
-      "price": "10",
       "images": [
         "images/8ae3084a-ed5f-4a81-b1f0-8b7a50da96e2.png"
-      ]
+      ],
+      "name": "Kit presilhas oncinha",
+      "price": "10"
     },
     {
       "category": "Acessórios de cabelo",
       "description": "",
       "id": "c6c1810c-4d10-4111-842b-f34af7cb8c7f",
       "image": "images/c6c1810c-4d10-4111-842b-f34af7cb8c7f.png",
-      "name": "Kit elásticos de cabelo tons neutros",
-      "price": "5",
       "images": [
         "images/c6c1810c-4d10-4111-842b-f34af7cb8c7f.png"
-      ]
+      ],
+      "name": "Kit elásticos de cabelo tons neutros",
+      "price": "5"
     },
     {
       "category": "Acessórios de cabelo",
       "description": "",
       "id": "4e829472-5390-4cf9-a4f1-9fb5411b361e",
       "image": "images/4e829472-5390-4cf9-a4f1-9fb5411b361e.png",
-      "name": "Piranha com cristais roxo",
-      "price": "10",
       "images": [
         "images/4e829472-5390-4cf9-a4f1-9fb5411b361e.png"
-      ]
+      ],
+      "name": "Piranha com cristais roxo",
+      "price": "10"
     },
     {
       "category": "Brincos 3D",
       "description": "",
       "id": "fc2d03de-74b0-4cfe-ade9-5c5446c2d307",
       "image": "images/fc2d03de-74b0-4cfe-ade9-5c5446c2d307.png",
-      "name": "Brinco patinha",
-      "price": "10",
       "images": [
         "images/fc2d03de-74b0-4cfe-ade9-5c5446c2d307.png"
-      ]
+      ],
+      "name": "Brinco patinha",
+      "price": "10"
     },
     {
       "category": "Brincos 3D",
       "description": "",
       "id": "09c7fb75-6482-409a-9268-f70db1286de8",
       "image": "images/09c7fb75-6482-409a-9268-f70db1286de8.png",
-      "name": "Brinco sereia",
-      "price": "10",
       "images": [
         "images/09c7fb75-6482-409a-9268-f70db1286de8.png"
-      ]
+      ],
+      "name": "Brinco sereia",
+      "price": "10"
     },
     {
       "category": "Brincos 3D",
       "description": "",
       "id": "0d661790-25da-4caf-bdec-dd29d4d71eea",
       "image": "images/0d661790-25da-4caf-bdec-dd29d4d71eea.png",
-      "name": "Brinco lua e estrela",
-      "price": "10",
       "images": [
         "images/0d661790-25da-4caf-bdec-dd29d4d71eea.png"
-      ]
+      ],
+      "name": "Brinco lua e estrela",
+      "price": "10"
     },
     {
       "category": "Brincos 3D",
       "description": "",
       "id": "9b0f850d-673e-46fe-8d96-7e96735f0ec5",
       "image": "images/9b0f850d-673e-46fe-8d96-7e96735f0ec5.png",
-      "name": "Brinco coração",
-      "price": "10",
       "images": [
         "images/9b0f850d-673e-46fe-8d96-7e96735f0ec5.png"
-      ]
+      ],
+      "name": "Brinco coração",
+      "price": "10"
     },
     {
       "category": "Brincos 3D",
       "description": "",
       "id": "6272a743-6d76-4dba-afad-c990b19f76e1",
       "image": "images/6272a743-6d76-4dba-afad-c990b19f76e1.png",
-      "name": "Brinco árvore da vida",
-      "price": "10",
       "images": [
         "images/6272a743-6d76-4dba-afad-c990b19f76e1.png"
-      ]
+      ],
+      "name": "Brinco árvore da vida",
+      "price": "10"
     },
     {
       "category": "Brincos 3D",
       "description": "",
       "id": "f7f09dec-dc64-4932-b6ad-3924eef570c0",
       "image": "images/f7f09dec-dc64-4932-b6ad-3924eef570c0.png",
-      "name": "Brinco losango azul",
-      "price": "10",
       "images": [
         "images/f7f09dec-dc64-4932-b6ad-3924eef570c0.png"
-      ]
+      ],
+      "name": "Brinco losango azul",
+      "price": "10"
     },
     {
       "category": "Brincos 3D",
       "description": "",
       "id": "85414b6b-718b-45a1-817c-17b902acd861",
       "image": "images/85414b6b-718b-45a1-817c-17b902acd861.png",
-      "name": "Brinco Lua e gato",
-      "price": "10",
       "images": [
         "images/85414b6b-718b-45a1-817c-17b902acd861.png"
-      ]
+      ],
+      "name": "Brinco Lua e gato",
+      "price": "10"
     },
     {
       "category": "Brincos 3D",
       "description": "",
       "id": "d9c8cd09-dfbe-4869-ab28-cd96a4388e94",
       "image": "images/d9c8cd09-dfbe-4869-ab28-cd96a4388e94.png",
-      "name": "Brinco folha",
-      "price": "10",
       "images": [
         "images/d9c8cd09-dfbe-4869-ab28-cd96a4388e94.png"
-      ]
+      ],
+      "name": "Brinco folha",
+      "price": "10"
     },
     {
       "category": "Brincos 3D",
       "description": "",
       "id": "fe6ffee9-dace-4646-b734-64e4bc53284c",
       "image": "images/fe6ffee9-dace-4646-b734-64e4bc53284c.png",
-      "name": "Brinco abelha",
-      "price": "10",
       "images": [
         "images/fe6ffee9-dace-4646-b734-64e4bc53284c.png"
-      ]
+      ],
+      "name": "Brinco abelha",
+      "price": "10"
     },
     {
-      "id": "060101b0-573f-4dfa-aead-741a59c30428",
-      "name": "Kit Marcador de páginas místico",
-      "description": "",
-      "price": "10",
       "category": "Marcador de páginas",
+      "description": "",
+      "id": "060101b0-573f-4dfa-aead-741a59c30428",
       "image": "images/060101b0-573f-4dfa-aead-741a59c30428.jpg",
       "images": [
         "images/060101b0-573f-4dfa-aead-741a59c30428.jpg"
-      ]
+      ],
+      "name": "Kit Marcador de páginas místico",
+      "price": "10"
     },
     {
-      "id": "d67c3c2e-89ae-424d-95b5-a06b1e739d7d",
-      "name": "Clips flor",
-      "description": "3 unidades",
-      "price": "5",
       "category": "Marcador de páginas",
+      "description": "3 unidades",
+      "id": "d67c3c2e-89ae-424d-95b5-a06b1e739d7d",
       "image": "images/d67c3c2e-89ae-424d-95b5-a06b1e739d7d.png",
       "images": [
         "images/d67c3c2e-89ae-424d-95b5-a06b1e739d7d.png"
-      ]
+      ],
+      "name": "Clips flor",
+      "price": "5"
     },
     {
-      "id": "fb0ac28b-645d-4c39-b3b9-d1367c77f58d",
-      "name": "Marcador de páginas gatinho",
-      "description": "",
-      "price": "5",
       "category": "Marcador de páginas",
+      "description": "",
+      "id": "fb0ac28b-645d-4c39-b3b9-d1367c77f58d",
       "image": "images/fb0ac28b-645d-4c39-b3b9-d1367c77f58d.png",
       "images": [
         "images/fb0ac28b-645d-4c39-b3b9-d1367c77f58d.png"
-      ]
+      ],
+      "name": "Marcador de páginas gatinho",
+      "price": "5"
     },
     {
-      "id": "d98a0dd8-2ff1-4f43-9379-2341314235eb",
-      "name": "Marcador borboleta",
-      "description": "",
-      "price": "5",
       "category": "Marcador de páginas",
+      "description": "",
+      "id": "d98a0dd8-2ff1-4f43-9379-2341314235eb",
       "image": "images/d98a0dd8-2ff1-4f43-9379-2341314235eb.png",
       "images": [
         "images/d98a0dd8-2ff1-4f43-9379-2341314235eb.png"
-      ]
+      ],
+      "name": "Marcador borboleta",
+      "price": "5"
     },
     {
-      "id": "b96d290c-b5b2-4da4-b701-b5d6826fb6ef",
-      "name": "Marcador patinha preto",
-      "description": "",
-      "price": "5",
       "category": "Marcador de páginas",
+      "description": "",
+      "id": "b96d290c-b5b2-4da4-b701-b5d6826fb6ef",
       "image": "images/b96d290c-b5b2-4da4-b701-b5d6826fb6ef.png",
       "images": [
         "images/b96d290c-b5b2-4da4-b701-b5d6826fb6ef.png"
-      ]
+      ],
+      "name": "Marcador patinha preto",
+      "price": "5"
     },
     {
-      "id": "a79b4833-7c41-43bb-aa34-ec3e7c44aea7",
-      "name": "Marcador patinha rosa",
-      "description": "",
-      "price": "5",
       "category": "Marcador de páginas",
+      "description": "",
+      "id": "a79b4833-7c41-43bb-aa34-ec3e7c44aea7",
       "image": "images/a79b4833-7c41-43bb-aa34-ec3e7c44aea7.png",
       "images": [
         "images/a79b4833-7c41-43bb-aa34-ec3e7c44aea7.png"
-      ]
+      ],
+      "name": "Marcador patinha rosa",
+      "price": "5"
     },
     {
-      "id": "40bf19fd-f4f4-47f0-a116-c46b4eac00b7",
-      "name": "Conjunto Malaquita",
-      "description": "✨ Detalhes do Produto:\r\n\r\n· Pulseira: Fio de elástico de alta durabilidade (super confortável).\r\n· Brinco: Anzol na cor prata níquel, leve e delicado.\r\n· Pedra: Malaquita natural de 8mm.",
-      "price": "35",
       "category": "",
+      "description": "✨ Detalhes do Produto:\r\n\r\n· Pulseira: Fio de elástico de alta durabilidade (super confortável).\r\n· Brinco: Anzol na cor prata níquel, leve e delicado.\r\n· Pedra: Malaquita natural de 8mm.",
+      "id": "40bf19fd-f4f4-47f0-a116-c46b4eac00b7",
       "image": "images/40bf19fd-f4f4-47f0-a116-c46b4eac00b7-128d1ddc.png",
       "images": [
         "images/40bf19fd-f4f4-47f0-a116-c46b4eac00b7-128d1ddc.png"
-      ]
+      ],
+      "name": "Conjunto Malaquita",
+      "price": "35"
     }
   ]
 }
